@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>게시판 · 테스트 웹사이트</title>
+<style>
+  :root {
+    --bg: #090b10; --ink: #f2f4f8; --sub: #98a2b3; --line: rgba(255,255,255,.09);
+    --glass: rgba(255,255,255,.045); --glass2: rgba(255,255,255,.08);
+    --c1: #7c5cff; --c2: #22d3a6; --c3: #ff8a3d; --c4: #3b9dff; --bad: #ff6b6b;
+    --shadow: 0 20px 60px rgba(0,0,0,.45);
+  }
+  :root[data-theme="light"] {
+    --bg: #f5f3ee; --ink: #14171f; --sub: #5b6474; --line: rgba(20,23,31,.1);
+    --glass: rgba(255,255,255,.7); --glass2: rgba(255,255,255,.95); --bad: #d63b3b;
+    --shadow: 0 20px 50px rgba(30,40,70,.12);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.65; overflow-x: hidden; word-break: keep-all; overflow-wrap: anywhere;
+    font-family: "Pretendard", "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  button, input, textarea { font: inherit; color: inherit; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 22px; }
+
+  .aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+  .aurora i { position: absolute; width: 46vw; height: 46vw; min-width: 380px; min-height: 380px; border-radius: 50%; filter: blur(90px); opacity: .28;
+    animation: drift 24s ease-in-out infinite alternate; }
+  .aurora i:nth-child(1) { background: var(--c4); top: -16%; left: -10%; }
+  .aurora i:nth-child(2) { background: var(--c1); top: 30%; right: -16%; animation-delay: -8s; }
+  :root[data-theme="light"] .aurora i { opacity: .2; }
+  @keyframes drift { to { transform: translate3d(6vw, 5vh, 0) scale(1.12); } }
+
+  header { position: sticky; top: 14px; z-index: 20; padding: 0 14px; }
+  .bar { max-width: 1040px; margin: 0 auto; height: 58px; padding: 0 10px 0 20px; display: flex; align-items: center; justify-content: space-between;
+    background: var(--glass); border: 1px solid var(--line); border-radius: 999px;
+    backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%); box-shadow: var(--shadow); }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
+  .logo span { width: 22px; height: 22px; border-radius: 7px; background: conic-gradient(from 210deg, var(--c1), var(--c4), var(--c2), var(--c3), var(--c1)); }
+  nav { display: flex; align-items: center; gap: 7px; }
+  nav a { padding: 8px 16px; border-radius: 999px; font-size: .88rem; font-weight: 700; color: #fff; white-space: nowrap; transition: transform .15s; }
+  nav a:nth-child(1) { background: linear-gradient(135deg, #8b6bff, #6246ea); }
+  nav a:nth-child(2) { background: linear-gradient(135deg, #2bd9ad, #14a37f); }
+  nav a:nth-child(3) { background: linear-gradient(135deg, #ff9d57, #ef6b1f); }
+  nav a:nth-child(4) { background: linear-gradient(135deg, #4fb0ff, #2a7de1); }
+  nav a:hover { transform: translateY(-2px); }
+  #theme { width: 38px; height: 38px; margin-left: 4px; border-radius: 50%; border: 1px solid var(--line); background: var(--glass2); cursor: pointer; display: grid; place-items: center; }
+
+  .head { padding: 70px 0 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .eyebrow { font-size: .8rem; font-weight: 800; letter-spacing: .16em; color: var(--c4); }
+  h1 { font-size: clamp(2rem, 6vw, 3.2rem); letter-spacing: -0.04em; line-height: 1.1; margin: 6px 0 0; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 11px 20px; border-radius: 12px; font-weight: 700; font-size: .93rem; cursor: pointer;
+    border: 1px solid var(--line); background: var(--glass); transition: transform .15s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.main { background: var(--ink); color: var(--bg); border-color: transparent; }
+  .btn.bad { color: var(--bad); }
+  .btn:disabled { opacity: .5; cursor: default; transform: none; }
+
+  .panel { background: var(--glass); border: 1px solid var(--line); border-radius: 22px; overflow: hidden;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  .post { display: grid; grid-template-columns: 56px 1fr auto; gap: 14px; align-items: center; padding: 18px 22px; border-bottom: 1px solid var(--line); transition: background .2s; }
+  .post:last-child { border-bottom: 0; }
+  .post:hover { background: var(--glass2); }
+  .post .no { color: var(--sub); font-weight: 700; font-variant-numeric: tabular-nums; font-size: .9rem; }
+  .post b { font-size: 1.05rem; letter-spacing: -0.02em; display: block; }
+  .post .meta { color: var(--sub); font-size: .84rem; margin-top: 2px; }
+  .post .date { color: var(--sub); font-size: .84rem; white-space: nowrap; text-align: right; }
+  .empty, .notice { padding: 56px 24px; text-align: center; color: var(--sub); }
+  .notice b { display: block; color: var(--ink); font-size: 1.1rem; margin-bottom: 6px; }
+
+  .pager { display: flex; justify-content: center; gap: 6px; margin: 22px 0 0; flex-wrap: wrap; }
+  .pager button { min-width: 38px; height: 38px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--glass); cursor: pointer; font-weight: 600; }
+  .pager button.on { background: var(--ink); color: var(--bg); border-color: transparent; }
+  .pager button:disabled { opacity: .4; cursor: default; }
+
+  .view { padding: 30px 28px; }
+  .view h2 { font-size: clamp(1.4rem, 4vw, 2rem); letter-spacing: -0.03em; line-height: 1.3; margin: 0 0 10px; }
+  .view .meta { color: var(--sub); font-size: .88rem; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+  .view .body { padding: 24px 0 8px; white-space: pre-wrap; font-size: 1.02rem; min-height: 140px; }
+  .acts { display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap; margin: 18px 0 0; }
+  .acts div { display: flex; gap: 10px; }
+
+  form { padding: 28px; display: grid; gap: 16px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  label { display: grid; gap: 6px; font-size: .86rem; font-weight: 600; color: var(--sub); }
+  input, textarea { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--glass2); outline: none; }
+  input:focus, textarea:focus { border-color: var(--c4); }
+  textarea { min-height: 220px; resize: vertical; line-height: 1.6; }
+  .msg { color: var(--bad); font-size: .9rem; min-height: 1.3em; }
+  .hint { color: var(--sub); font-size: .82rem; font-weight: 400; }
+
+  footer { padding: 56px 0 40px; text-align: center; color: var(--sub); font-size: .88rem; }
+
+  @media (max-width: 620px) {
+    .bar { padding-left: 14px; height: 54px; }
+    .logo em { display: none; }
+    nav { gap: 4px; }
+    nav a { padding: 7px 10px; font-size: .78rem; }
+    #theme { width: 34px; height: 34px; }
+    .post { grid-template-columns: 1fr; gap: 4px; padding: 16px 18px; }
+    .post .no { display: none; }
+    .post .date { text-align: left; }
+    .two { grid-template-columns: 1fr; }
+    .view, form { padding: 22px 18px; }
+    .head { padding-top: 48px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="aurora"><i></i><i></i></div>
+
+<header>
+  <div class="bar">
+    <a class="logo" href="./"><span></span><em style="font-style:normal">테스트 웹사이트</em></a>
+    <nav>
+      <a href="./#about">소개</a>
+      <a href="./#work">하는 일</a>
+      <a href="./#list">목록</a>
+      <a href="board.html">게시판</a>
+      <button id="theme" type="button" aria-label="밝기 전환" title="밝기 전환">◐</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="head">
+    <div>
+      <div class="eyebrow">BOARD</div>
+      <h1>게시판</h1>
+    </div>
+    <div id="headActs"></div>
+  </div>
+  <div id="app"></div>
+</main>
+
+<footer>테스트 웹사이트 · 2026</footer>
+
+<script>
+(function () {
+  // Supabase 프로젝트 정보 (공개용 키만 넣는다)
+  var SUPABASE_URL = 'https://xoihvpaqwfhaxlkykhkp.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_ayWqtSGUnA8im1gS0_s1_g_-POHAuJk';
+  var PAGE_SIZE = 10;
+
+  var root = document.documentElement, app = document.getElementById('app'), headActs = document.getElementById('headActs');
+
+  var saved = null;
+  try { saved = localStorage.getItem('theme'); } catch (e) {}
+  if (saved === 'light' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)) root.setAttribute('data-theme', 'light');
+  document.getElementById('theme').addEventListener('click', function () {
+    var light = root.getAttribute('data-theme') === 'light';
+    if (light) root.removeAttribute('data-theme'); else root.setAttribute('data-theme', 'light');
+    try { localStorage.setItem('theme', light ? 'dark' : 'light'); } catch (e) {}
+  });
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined && text !== null) n.textContent = text;
+    return n;
+  }
+  function clear(n) { while (n.firstChild) n.removeChild(n.firstChild); }
+  function pad(v) { return (v < 10 ? '0' : '') + v; }
+  function fmtDate(s, full) {
+    var d = new Date(s);
+    var day = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+    var hm = pad(d.getHours()) + ':' + pad(d.getMinutes());
+    if (full) return day + ' ' + hm;
+    var n = new Date();
+    return (d.toDateString() === n.toDateString()) ? hm : day;
+  }
+
+  function api(path, opt) {
+    opt = opt || {};
+    var h = { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' };
+    if (SUPABASE_KEY.indexOf('eyJ') === 0) h.Authorization = 'Bearer ' + SUPABASE_KEY;
+    if (opt.count) h.Prefer = 'count=exact';
+    return fetch(SUPABASE_URL.replace(/\/+$/, '') + '/rest/v1/' + path, {
+      method: opt.body ? 'POST' : 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined
+    }).then(function (r) {
+      return r.text().then(function (t) {
+        var data = null;
+        try { data = t ? JSON.parse(t) : null; } catch (e) {}
+        if (!r.ok) throw new Error((data && data.message) || ('요청에 실패했습니다 (' + r.status + ')'));
+        var total = null, cr = r.headers.get('content-range');
+        if (cr && cr.indexOf('/') >= 0) { var v = cr.split('/')[1]; if (v !== '*') total = +v; }
+        return { data: data, total: total };
+      });
+    });
+  }
+  function rpc(name, body) { return api('rpc/' + name, { body: body }).then(function (r) { return r.data; }); }
+
+  function showError(err) {
+    clear(app);
+    var p = el('div', 'panel'), n = el('div', 'notice');
+    n.appendChild(el('b', null, '불러오지 못했습니다'));
+    n.appendChild(document.createTextNode(err && err.message ? err.message : '잠시 후 다시 시도해 주세요'));
+    p.appendChild(n); app.appendChild(p);
+  }
+
+  function setHead(buttons) {
+    clear(headActs);
+    buttons.forEach(function (b) { headActs.appendChild(b); });
+  }
+  function linkBtn(text, hash, cls) {
+    var a = el('a', 'btn' + (cls ? ' ' + cls : ''), text);
+    a.href = hash;
+    return a;
+  }
+
+  // 목록
+  function renderList(page) {
+    setHead([linkBtn('글쓰기', '#/write', 'main')]);
+    clear(app);
+    var panel = el('div', 'panel');
+    panel.appendChild(el('div', 'empty', '불러오는 중…'));
+    app.appendChild(panel);
+    var offset = (page - 1) * PAGE_SIZE;
+    api('posts?select=id,title,nickname,views,created_at&order=id.desc&limit=' + PAGE_SIZE + '&offset=' + offset, { count: true })
+      .then(function (res) {
+        clear(panel);
+        var rows = res.data || [];
+        if (!rows.length) { panel.appendChild(el('div', 'empty', page > 1 ? '이 페이지에는 글이 없습니다' : '아직 글이 없습니다. 첫 글을 남겨 보세요.')); }
+        rows.forEach(function (p) {
+          var a = el('a', 'post'); a.href = '#/post/' + p.id;
+          a.appendChild(el('span', 'no', p.id));
+          var mid = el('div');
+          mid.appendChild(el('b', null, p.title));
+          mid.appendChild(el('div', 'meta', p.nickname + ' · 조회 ' + p.views));
+          a.appendChild(mid);
+          a.appendChild(el('span', 'date', fmtDate(p.created_at)));
+          panel.appendChild(a);
+        });
+        var total = res.total === null ? offset + rows.length : res.total;
+        var pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        if (pages > 1) {
+          var pg = el('div', 'pager');
+          var from = Math.max(1, Math.min(page - 2, pages - 4)), to = Math.min(pages, from + 4);
+          function pbtn(label, target, on, off) {
+            var b = el('button', on ? 'on' : null, label); b.type = 'button'; b.disabled = !!off;
+            b.addEventListener('click', function () { location.hash = '#/list/' + target; });
+            return b;
+          }
+          pg.appendChild(pbtn('‹', page - 1, false, page <= 1));
+          for (var i = from; i <= to; i++) pg.appendChild(pbtn(String(i), i, i === page));
+          pg.appendChild(pbtn('›', page + 1, false, page >= pages));
+          app.appendChild(pg);
+        }
+      })
+      .catch(showError);
+  }
+
+  // 글 보기
+  function renderPost(id) {
+    setHead([linkBtn('목록', '#/')]);
+    clear(app);
+    var panel = el('div', 'panel');
+    panel.appendChild(el('div', 'empty', '불러오는 중…'));
+    app.appendChild(panel);
+    api('posts?select=id,title,content,nickname,views,created_at&id=eq.' + id)
+      .then(function (res) {
+        clear(panel);
+        var p = res.data && res.data[0];
+        if (!p) { panel.appendChild(el('div', 'empty', '없는 글이거나 삭제된 글입니다')); return; }
+        var v = el('div', 'view');
+        v.appendChild(el('h2', null, p.title));
+        v.appendChild(el('div', 'meta', p.nickname + ' · ' + fmtDate(p.created_at, true) + ' · 조회 ' + (p.views + 1)));
+        v.appendChild(el('div', 'body', p.content));
+        panel.appendChild(v);
+
+        var acts = el('div', 'acts'), left = el('div'), right = el('div');
+        left.appendChild(linkBtn('목록', '#/'));
+        right.appendChild(linkBtn('수정', '#/edit/' + p.id));
+        var del = el('button', 'btn bad', '삭제'); del.type = 'button';
+        del.addEventListener('click', function () {
+          var pw = window.prompt('글을 쓸 때 정한 비밀번호를 입력하세요');
+          if (pw === null || pw === '') return;
+          del.disabled = true;
+          rpc('delete_post', { p_id: p.id, p_password: pw })
+            .then(function (ok) {
+              if (ok) { location.hash = '#/'; } else { del.disabled = false; window.alert('비밀번호가 맞지 않습니다'); }
+            })
+            .catch(function (e) { del.disabled = false; window.alert(e.message); });
+        });
+        right.appendChild(del);
+        acts.appendChild(left); acts.appendChild(right);
+        app.appendChild(acts);
+        rpc('view_post', { p_id: p.id }).catch(function () {});
+      })
+      .catch(showError);
+  }
+
+  // 글쓰기 · 수정
+  function field(labelText, node, hint) {
+    var l = el('label', null, labelText);
+    if (hint) { l.appendChild(document.createTextNode(' ')); l.appendChild(el('span', 'hint', hint)); }
+    l.appendChild(node);
+    return l;
+  }
+  function renderForm(post) {
+    var editing = !!post;
+    setHead([linkBtn('취소', editing ? '#/post/' + post.id : '#/')]);
+    clear(app);
+    var panel = el('div', 'panel'), f = el('form');
+    var title = el('input'); title.maxLength = 100; title.required = true; title.placeholder = '제목';
+    var nick = el('input'); nick.maxLength = 20; nick.required = true; nick.placeholder = '닉네임';
+    var pw = el('input'); pw.type = 'password'; pw.maxLength = 50; pw.required = true; pw.minLength = 4; pw.autocomplete = 'new-password';
+    pw.placeholder = editing ? '글을 쓸 때 정한 비밀번호' : '4자 이상';
+    var body = el('textarea'); body.maxLength = 5000; body.required = true; body.placeholder = '내용';
+    var msg = el('div', 'msg');
+    var submit = el('button', 'btn main', editing ? '수정하기' : '올리기'); submit.type = 'submit';
+
+    f.appendChild(field('제목', title));
+    var two = el('div', 'two');
+    if (editing) {
+      title.value = post.title; body.value = post.content; nick.value = post.nickname; nick.disabled = true;
+    }
+    two.appendChild(field('닉네임', nick));
+    two.appendChild(field('비밀번호', pw, editing ? '' : '수정·삭제할 때 필요합니다'));
+    f.appendChild(two);
+    f.appendChild(field('내용', body));
+    f.appendChild(msg);
+    var row = el('div'); row.style.textAlign = 'right'; row.appendChild(submit);
+    f.appendChild(row);
+
+    f.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      msg.textContent = '';
+      if (!title.value.trim() || !body.value.trim() || !nick.value.trim()) { msg.textContent = '제목, 닉네임, 내용을 모두 입력해 주세요'; return; }
+      if (pw.value.length < 4) { msg.textContent = '비밀번호는 4자 이상이어야 합니다'; return; }
+      submit.disabled = true;
+      var job = editing
+        ? rpc('update_post', { p_id: post.id, p_title: title.value, p_content: body.value, p_password: pw.value })
+            .then(function (ok) { if (!ok) throw new Error('비밀번호가 맞지 않습니다'); return post.id; })
+        : rpc('create_post', { p_title: title.value, p_content: body.value, p_nickname: nick.value, p_password: pw.value });
+      job.then(function (id) { location.hash = '#/post/' + id; })
+        .catch(function (e) { submit.disabled = false; msg.textContent = e.message; });
+    });
+
+    panel.appendChild(f); app.appendChild(panel);
+    (editing ? body : title).focus();
+  }
+
+  function renderEdit(id) {
+    setHead([]);
+    clear(app);
+    api('posts?select=id,title,content,nickname&id=eq.' + id)
+      .then(function (res) {
+        var p = res.data && res.data[0];
+        if (!p) { showError(new Error('없는 글이거나 삭제된 글입니다')); return; }
+        renderForm(p);
+      })
+      .catch(showError);
+  }
+
+  function route() {
+    window.scrollTo(0, 0);
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      setHead([]);
+      clear(app);
+      var p = el('div', 'panel'), n = el('div', 'notice');
+      n.appendChild(el('b', null, '게시판을 준비하고 있습니다'));
+      n.appendChild(document.createTextNode('곧 글을 남길 수 있게 됩니다.'));
+      p.appendChild(n); app.appendChild(p);
+      return;
+    }
+    var h = location.hash.replace(/^#\/?/, '').split('/');
+    var num = parseInt(h[1], 10);
+    if (h[0] === 'write') renderForm(null);
+    else if (h[0] === 'post' && num > 0) renderPost(num);
+    else if (h[0] === 'edit' && num > 0) renderEdit(num);
+    else renderList(h[0] === 'list' && num > 0 ? num : 1);
+  }
+
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>
