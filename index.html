@@ -24,8 +24,13 @@
     backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); z-index: 10; }
   header .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
   .logo { font-weight: 700; letter-spacing: -0.02em; }
-  nav { display: flex; gap: 22px; font-size: 0.95rem; color: var(--sub); }
-  nav a:hover { color: var(--accent); }
+  nav { display: flex; flex-direction: row; align-items: center; gap: 8px; font-size: 0.9rem; }
+  nav a { padding: 7px 16px; border-radius: 999px; font-weight: 600; color: #fff; white-space: nowrap;
+    box-shadow: 0 1px 2px rgba(0,0,0,.12); transition: transform .12s, filter .12s; }
+  nav a:nth-child(1) { background: #2f7d68; }
+  nav a:nth-child(2) { background: #3f6fd8; }
+  nav a:nth-child(3) { background: #e0793a; }
+  nav a:hover { transform: translateY(-1px); filter: brightness(1.08); }
 
   .hero { padding: 96px 0 80px; }
   .tag { display: inline-block; padding: 4px 12px; border-radius: 999px; background: var(--accent-soft);
@@ -64,7 +69,8 @@
   footer { padding: 36px 0 56px; border-top: 1px solid var(--line); color: var(--sub); font-size: 0.9rem; text-align: center; }
 
   @media (max-width: 680px) {
-    nav { gap: 14px; font-size: 0.88rem; }
+    nav { gap: 6px; font-size: 0.82rem; }
+    nav a { padding: 6px 11px; }
     .hero { padding: 64px 0 56px; }
     .about, .cards { grid-template-columns: 1fr; }
     .list li { flex-direction: column; align-items: flex-start; gap: 4px; }
