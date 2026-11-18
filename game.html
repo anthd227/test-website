@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>게임 · 테스트 웹사이트</title>
+<style>
+  :root {
+    --bg: #090b10; --ink: #f2f4f8; --sub: #98a2b3; --line: rgba(255,255,255,.09);
+    --glass: rgba(255,255,255,.045); --glass2: rgba(255,255,255,.08);
+    --c1: #7c5cff; --c2: #22d3a6; --c3: #ff8a3d; --c4: #3b9dff; --c5: #ff6b9d;
+    --shadow: 0 20px 60px rgba(0,0,0,.45);
+  }
+  :root[data-theme="light"] {
+    --bg: #f5f3ee; --ink: #14171f; --sub: #5b6474; --line: rgba(20,23,31,.1);
+    --glass: rgba(255,255,255,.7); --glass2: rgba(255,255,255,.95);
+    --shadow: 0 20px 50px rgba(30,40,70,.12);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.65; overflow-x: hidden; word-break: keep-all; overflow-wrap: anywhere;
+    font-family: "Pretendard", "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 22px; }
+
+  .aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+  .aurora i { position: absolute; width: 46vw; height: 46vw; min-width: 380px; min-height: 380px; border-radius: 50%; filter: blur(90px); opacity: .28;
+    animation: drift 24s ease-in-out infinite alternate; }
+  .aurora i:nth-child(1) { background: var(--c5); top: -16%; left: -10%; }
+  .aurora i:nth-child(2) { background: var(--c1); top: 30%; right: -16%; animation-delay: -8s; }
+  :root[data-theme="light"] .aurora i { opacity: .2; }
+  @keyframes drift { to { transform: translate3d(6vw, 5vh, 0) scale(1.12); } }
+
+  header { position: sticky; top: 14px; z-index: 20; padding: 0 14px; }
+  .bar { max-width: 1040px; margin: 0 auto; height: 58px; padding: 0 10px 0 20px; display: flex; align-items: center; justify-content: space-between;
+    background: var(--glass); border: 1px solid var(--line); border-radius: 999px;
+    backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%); box-shadow: var(--shadow); }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
+  .logo span { width: 22px; height: 22px; border-radius: 7px; background: conic-gradient(from 210deg, var(--c1), var(--c4), var(--c2), var(--c3), var(--c1)); }
+  nav { display: flex; align-items: center; gap: 7px; }
+  nav a { padding: 8px 16px; border-radius: 999px; font-size: .88rem; font-weight: 700; color: #fff; white-space: nowrap; transition: transform .15s; }
+  nav a:nth-child(1) { background: linear-gradient(135deg, #8b6bff, #6246ea); }
+  nav a:nth-child(2) { background: linear-gradient(135deg, #2bd9ad, #14a37f); }
+  nav a:nth-child(3) { background: linear-gradient(135deg, #ff9d57, #ef6b1f); }
+  nav a:nth-child(4) { background: linear-gradient(135deg, #4fb0ff, #2a7de1); }
+  nav a:nth-child(5) { background: linear-gradient(135deg, #ff7aa8, #e0457b); }
+  nav a:hover { transform: translateY(-2px); }
+  #theme { width: 38px; height: 38px; margin-left: 4px; border-radius: 50%; border: 1px solid var(--line); background: var(--glass2); cursor: pointer; display: grid; place-items: center; }
+
+  .head { padding: 70px 0 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .eyebrow { font-size: .8rem; font-weight: 800; letter-spacing: .16em; color: var(--c5); }
+  h1 { font-size: clamp(2rem, 6vw, 3.2rem); letter-spacing: -0.04em; line-height: 1.1; margin: 6px 0 0; }
+  .head p { margin: 8px 0 0; color: var(--sub); }
+  .acts { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 11px 20px; border-radius: 12px; font-weight: 700; font-size: .93rem; cursor: pointer;
+    border: 1px solid var(--line); background: var(--glass); transition: transform .15s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.main { background: var(--ink); color: var(--bg); border-color: transparent; }
+
+  .stage { border: 1px solid var(--line); border-radius: 22px; overflow: hidden; background: #141a22; box-shadow: var(--shadow); }
+  .stage iframe { display: block; width: 100%; height: calc(100vh - 150px); min-height: 600px; border: 0; }
+  .tip { color: var(--sub); font-size: .86rem; margin: 14px 4px 0; }
+
+  footer { padding: 56px 0 40px; text-align: center; color: var(--sub); font-size: .88rem; }
+
+  @media (max-width: 620px) {
+    .bar { padding-left: 14px; height: 54px; }
+    .logo em { display: none; }
+    nav { gap: 3px; }
+    nav a { padding: 7px 8px; font-size: .78rem; }
+    #theme { width: 34px; height: 34px; }
+    .head { padding-top: 48px; }
+    .stage { border-radius: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="aurora"><i></i><i></i></div>
+
+<header>
+  <div class="bar">
+    <a class="logo" href="./"><span></span><em style="font-style:normal">테스트 웹사이트</em></a>
+    <nav>
+      <a href="./#about">소개</a>
+      <a href="./#work">하는 일</a>
+      <a href="./#list">목록</a>
+      <a href="board.html">게시판</a>
+      <a href="game.html">게임</a>
+      <button id="theme" type="button" aria-label="밝기 전환" title="밝기 전환">◐</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="head">
+    <div>
+      <div class="eyebrow">GAME</div>
+      <h1>룬 가디언즈 TD</h1>
+      <p>종족을 골라 40웨이브를 막아내는 타워 디펜스입니다.</p>
+    </div>
+    <div class="acts">
+      <button class="btn main" id="full" type="button">전체 화면</button>
+      <a class="btn" href="td.html" target="_blank" rel="noopener">새 창에서 열기</a>
+    </div>
+  </div>
+
+  <div class="stage">
+    <iframe id="game" src="td.html" title="룬 가디언즈 TD" allow="fullscreen" allowfullscreen></iframe>
+  </div>
+  <p class="tip">PC 화면에 맞춰 만든 게임입니다. 단축키가 먹지 않으면 게임 화면을 한 번 클릭하세요.</p>
+</main>
+
+<footer>테스트 웹사이트 · 2026</footer>
+
+<script>
+(function () {
+  var root = document.documentElement, game = document.getElementById('game');
+
+  var saved = null;
+  try { saved = localStorage.getItem('theme'); } catch (e) {}
+  if (saved === 'light' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)) root.setAttribute('data-theme', 'light');
+  document.getElementById('theme').addEventListener('click', function () {
+    var light = root.getAttribute('data-theme') === 'light';
+    if (light) root.removeAttribute('data-theme'); else root.setAttribute('data-theme', 'light');
+    try { localStorage.setItem('theme', light ? 'dark' : 'light'); } catch (e) {}
+  });
+
+  // 전체 화면
+  document.getElementById('full').addEventListener('click', function () {
+    var fn = game.requestFullscreen || game.webkitRequestFullscreen;
+    if (fn) fn.call(game); else window.open('td.html', '_blank');
+    game.focus();
+  });
+  game.addEventListener('load', function () { game.focus(); });
+})();
+</script>
+</body>
+</html>
