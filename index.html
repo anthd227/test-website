@@ -50,16 +50,26 @@
   #menuBtn:active { transform: scale(.94); }
   #menuBtn i { font-style: normal; font-size: 1.15rem; line-height: 1; transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
   header.open #menuBtn i { transform: rotate(135deg); }
-  nav { position: absolute; top: calc(100% + 18px); right: 0; min-width: 100%; display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
-  header.open nav { pointer-events: auto; }
-  nav a { padding: 9px 18px; border-radius: 999px; text-align: center; font-size: .9rem; font-weight: 700; white-space: nowrap; background: var(--bg2); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 8px 22px rgba(0,0,0,.18);
-    opacity: 0; visibility: hidden; transform: translateY(-16px) scale(.6); transition: transform .2s ease, opacity .16s, visibility 0s .2s, background .15s, color .15s; }
-  header.open nav a { opacity: 1; visibility: visible; transform: none;
-    transition: transform .45s cubic-bezier(.34,1.56,.64,1) calc(var(--i, 0) * 45ms), opacity .2s calc(var(--i, 0) * 45ms), background .15s, color .15s; }
-  header.open nav a:hover { background: var(--ink); color: var(--bg); }
-  #theme { width: 38px; height: 38px; margin-left: 4px; border-radius: 50%; border: 1px solid var(--line); background: var(--glass2);
-    color: var(--ink); cursor: pointer; font-size: 1rem; display: grid; place-items: center; transition: transform .3s; }
-  #theme:hover { transform: rotate(40deg); }
+  nav { position: absolute; top: calc(100% + 18px); right: 0; min-width: 230px; padding: 8px; display: flex; flex-direction: column; gap: 2px;
+    background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow);
+    opacity: 0; visibility: hidden; transform: translateY(-10px) scale(.92); transform-origin: top right;
+    transition: transform .18s ease, opacity .15s, visibility 0s .18s; }
+  header.open nav { opacity: 1; visibility: visible; transform: none; transition: transform .4s cubic-bezier(.34,1.56,.64,1), opacity .15s; }
+  nav a { display: flex; align-items: baseline; gap: 14px; padding: 10px 14px; border-radius: 12px; white-space: nowrap;
+    opacity: 0; transform: translateY(-6px); transition: background .15s, opacity .2s, transform .2s; }
+  nav a .n { flex: none; color: var(--sub); font-size: .72rem; font-weight: 600; font-variant-numeric: tabular-nums; opacity: .7; }
+  nav a .t { flex: 1; display: flex; flex-direction: column; line-height: 1.35; }
+  nav a b { font-size: .95rem; font-weight: 600; letter-spacing: -0.01em; }
+  nav a small { font-size: .76rem; color: var(--sub); }
+  nav a::after { content: ""; align-self: center; width: 6px; height: 6px; border-radius: 50%; background: var(--c1); opacity: 0; }
+  header.open nav a { opacity: 1; transform: none;
+    transition: background .15s, opacity .3s calc(60ms + var(--i, 0) * 40ms), transform .3s calc(60ms + var(--i, 0) * 40ms); }
+  header.open nav a:hover { background: var(--line); }
+  nav a.on::after { opacity: 1; }
+  #theme { display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 6px; padding: 12px 14px 8px; border: 0; border-top: 1px solid var(--line); background: none; color: var(--sub);
+    font: inherit; font-size: .84rem; font-weight: 600; text-align: left; cursor: pointer; transition: color .15s; }
+  #theme:hover { color: var(--ink); }
+  #theme i { font-style: normal; font-size: .95rem; line-height: 1; }
 
   /* 첫 화면 */
   .hero { padding: 110px 0 70px; text-align: center; }
@@ -164,7 +174,6 @@
     .bar { padding-left: 14px; height: 54px; }
     .logo em { display: none; }
     #menuBtn { height: 34px; }
-    #theme { width: 34px; height: 34px; }
     .row { grid-template-columns: 32px 1fr 26px; }
     .row small { display: none; }
     .tile { padding: 20px; border-radius: 20px; }
@@ -187,14 +196,14 @@
       <div class="menu">
         <button id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><i>+</i>메뉴</button>
         <nav id="menu">
-          <a href="#about">소개</a>
-          <a href="#work">하는 일</a>
-          <a href="#list">목록</a>
-          <a href="board.html">게시판</a>
-          <a href="game.html">게임</a>
+          <a href="#about"><span class="n">01</span><span class="t"><b>소개</b><small>이 사이트는 어떤 곳인지</small></span></a>
+          <a href="#work"><span class="n">02</span><span class="t"><b>하는 일</b><small>주로 다루는 것들</small></span></a>
+          <a href="#list"><span class="n">03</span><span class="t"><b>목록</b><small>만든 것과 정리한 글</small></span></a>
+          <a href="board.html"><span class="n">04</span><span class="t"><b>게시판</b><small>자유롭게 글 남기기</small></span></a>
+          <a href="game.html"><span class="n">05</span><span class="t"><b>게임</b><small>룬 가디언즈 TD</small></span></a>
+          <button id="theme" type="button" aria-label="밝기 전환"><i>◐</i>밝기 전환</button>
         </nav>
       </div>
-      <button id="theme" type="button" aria-label="밝기 전환" title="밝기 전환">◐</button>
     </div>
   </div>
 </header>
@@ -326,7 +335,7 @@
   document.querySelectorAll('#menu a').forEach(function (a, i) { a.style.setProperty('--i', i); });
   function setMenu(open) { header.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
   menuBtn.addEventListener('click', function (ev) { ev.stopPropagation(); setMenu(!header.classList.contains('open')); });
-  document.addEventListener('click', function () { setMenu(false); });
+  document.addEventListener('click', function (ev) { if (ev.target.closest && ev.target.closest('#theme')) return; setMenu(false); });
   document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') setMenu(false); });
 
   // 스크롤 등장
