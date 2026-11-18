@@ -7,15 +7,16 @@
 <title>테스트 웹사이트</title>
 <style>
   :root {
-    --bg: #090b10; --bg2: #0f131b; --ink: #f2f4f8; --sub: #98a2b3; --line: rgba(255,255,255,.09);
-    --glass: rgba(255,255,255,.045); --glass2: rgba(255,255,255,.08);
-    --c1: #7c5cff; --c2: #22d3a6; --c3: #ff8a3d; --c4: #3b9dff;
-    --shadow: 0 20px 60px rgba(0,0,0,.45);
+    --bg: #0b0c0f; --bg2: #16181d; --ink: #f3f4f6; --sub: #8d939e; --line: rgba(255,255,255,.1);
+    --glass: rgba(255,255,255,.04); --glass2: rgba(255,255,255,.08);
+    --c1: #8496ff;
+    --shadow: 0 16px 44px rgba(0,0,0,.4);
   }
   :root[data-theme="light"] {
-    --bg: #f5f3ee; --bg2: #ffffff; --ink: #14171f; --sub: #5b6474; --line: rgba(20,23,31,.1);
-    --glass: rgba(255,255,255,.7); --glass2: rgba(255,255,255,.95);
-    --shadow: 0 20px 50px rgba(30,40,70,.12);
+    --bg: #f7f7f8; --bg2: #ffffff; --ink: #111317; --sub: #666c78; --line: rgba(17,19,23,.1);
+    --glass: rgba(255,255,255,.75); --glass2: rgba(255,255,255,.95);
+    --c1: #4a63f0;
+    --shadow: 0 14px 36px rgba(20,25,40,.08);
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -27,17 +28,12 @@
 
   /* 배경 */
   .aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
-  .aurora i { position: absolute; width: 46vw; height: 46vw; min-width: 380px; min-height: 380px; border-radius: 50%;
-    filter: blur(90px); opacity: .34; animation: drift 22s ease-in-out infinite alternate; }
-  .aurora i:nth-child(1) { background: var(--c1); top: -14%; left: -8%; }
-  .aurora i:nth-child(2) { background: var(--c2); top: 18%; right: -14%; animation-duration: 27s; animation-delay: -6s; }
-  .aurora i:nth-child(3) { background: var(--c3); bottom: -22%; left: 24%; opacity: .2; animation-duration: 31s; animation-delay: -12s; }
-  :root[data-theme="light"] .aurora i { opacity: .22; }
+  .aurora i { position: absolute; top: -24%; left: 50%; width: 60vw; height: 46vw; min-width: 380px; min-height: 380px; border-radius: 50%;
+    transform: translateX(-50%); filter: blur(110px); opacity: .13; background: var(--c1); }
   .grid-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none;
     background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
     background-size: 56px 56px; mask-image: radial-gradient(ellipse 70% 55% at 50% 0%, #000 30%, transparent 75%);
     -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 0%, #000 30%, transparent 75%); }
-  @keyframes drift { to { transform: translate3d(7vw, 5vh, 0) scale(1.14); } }
 
   /* 상단 메뉴 */
   header { position: sticky; top: 14px; z-index: 20; padding: 0 14px; }
@@ -45,29 +41,23 @@
     background: var(--glass); border: 1px solid var(--line); border-radius: 999px;
     backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%); box-shadow: var(--shadow); }
   .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
-  .logo span { width: 22px; height: 22px; border-radius: 7px; background: conic-gradient(from 210deg, var(--c1), var(--c4), var(--c2), var(--c3), var(--c1)); }
-  .bar { position: relative; }
+  .logo span { width: 22px; height: 22px; border-radius: 7px; background: var(--ink); }
   .tools { display: flex; align-items: center; gap: 6px; }
+  .menu { position: relative; display: flex; }
   #menuBtn { height: 38px; padding: 0 16px 0 12px; border-radius: 999px; border: 0; background: var(--ink); color: var(--bg); font: inherit; font-size: .88rem; font-weight: 700;
     cursor: pointer; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; transition: transform .15s; }
   #menuBtn:hover { transform: translateY(-2px); }
   #menuBtn:active { transform: scale(.94); }
   #menuBtn i { font-style: normal; font-size: 1.15rem; line-height: 1; transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
   header.open #menuBtn i { transform: rotate(135deg); }
-  nav { position: absolute; top: calc(100% + 12px); right: 6px; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; pointer-events: none; }
+  nav { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; }
   header.open nav { pointer-events: auto; }
-  nav a { padding: 11px 20px; border-radius: 999px; font-size: .95rem; font-weight: 700; color: #fff; white-space: nowrap; box-shadow: 0 10px 24px rgba(0,0,0,.25);
-    opacity: 0; visibility: hidden; transform: translateY(-14px) scale(.4); transition: transform .15s, opacity .15s, visibility 0s .15s; }
-  header.open nav a { opacity: 1; visibility: visible; transform: none; transition: transform .15s;
-    animation: pop .5s cubic-bezier(.34,1.56,.64,1) backwards; animation-delay: calc(var(--i, 0) * 55ms); }
-  @keyframes pop { from { opacity: 0; transform: translateY(-22px) scale(.2) rotate(-10deg); } }
-  nav a:nth-child(1) { background: linear-gradient(135deg, #8b6bff, #6246ea); }
-  nav a:nth-child(2) { background: linear-gradient(135deg, #2bd9ad, #14a37f); }
-  nav a:nth-child(3) { background: linear-gradient(135deg, #ff9d57, #ef6b1f); }
-  nav a:nth-child(4) { background: linear-gradient(135deg, #4fb0ff, #2a7de1); }
-  nav a:nth-child(5) { background: linear-gradient(135deg, #ff7aa8, #e0457b); }
-  header.open nav a:hover { transform: translateY(-3px) scale(1.07); }
-  header.open nav a:active { transform: scale(.95); }
+  nav a { position: absolute; left: -30px; top: -30px; width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center;
+    font-size: .8rem; font-weight: 700; white-space: nowrap; background: var(--bg2); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 10px 26px rgba(0,0,0,.22);
+    opacity: 0; visibility: hidden; transform: scale(.3); transition: transform .22s ease, opacity .18s, visibility 0s .22s, background .15s, color .15s; }
+  header.open nav a { opacity: 1; visibility: visible; transform: translate(var(--x, 0), var(--y, 0));
+    transition: transform .5s cubic-bezier(.34,1.56,.64,1) calc(var(--i, 0) * 45ms), opacity .2s calc(var(--i, 0) * 45ms), background .15s, color .15s; }
+  header.open nav a:hover { background: var(--ink); color: var(--bg); }
   #theme { width: 38px; height: 38px; margin-left: 4px; border-radius: 50%; border: 1px solid var(--line); background: var(--glass2);
     color: var(--ink); cursor: pointer; font-size: 1rem; display: grid; place-items: center; transition: transform .3s; }
   #theme:hover { transform: rotate(40deg); }
@@ -76,12 +66,10 @@
   .hero { padding: 110px 0 70px; text-align: center; }
   .badge { display: inline-flex; align-items: center; gap: 9px; padding: 7px 16px; border-radius: 999px; font-size: .85rem; font-weight: 600;
     background: var(--glass); border: 1px solid var(--line); color: var(--sub); }
-  .badge b { width: 8px; height: 8px; border-radius: 50%; background: var(--c2); box-shadow: 0 0 0 0 var(--c2); animation: pulse 2s infinite; }
+  .badge b { width: 8px; height: 8px; border-radius: 50%; background: var(--c1); box-shadow: 0 0 0 0 var(--c1); animation: pulse 2s infinite; }
   @keyframes pulse { 70% { box-shadow: 0 0 0 9px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
   h1 { font-size: clamp(2.2rem, 9vw, 6.2rem); line-height: 1.04; letter-spacing: -0.05em; font-weight: 800; margin: 26px 0 22px; }
-  .grad { background: linear-gradient(100deg, var(--c1) 0%, var(--c4) 35%, var(--c2) 65%, var(--c3) 100%); background-size: 220% 100%;
-    -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 9s linear infinite; }
-  @keyframes shine { to { background-position: -220% 0; } }
+  .grad { color: var(--c1); }
   .hero p { font-size: clamp(1rem, 2.2vw, 1.22rem); color: var(--sub); max-width: 580px; margin: 0 auto 34px; }
   .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
   .btn { padding: 14px 26px; border-radius: 14px; font-weight: 700; font-size: .98rem; border: 1px solid var(--line); background: var(--glass);
@@ -97,11 +85,11 @@
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
   .marquee div { display: inline-block; animation: slide 30s linear infinite; }
   .marquee span { margin: 0 22px; font-weight: 700; letter-spacing: .02em; color: var(--sub); }
-  .marquee span::after { content: "✦"; margin-left: 44px; color: var(--c1); }
+  .marquee span::after { content: "✦"; margin-left: 44px; opacity: .5; }
   @keyframes slide { to { transform: translateX(-50%); } }
 
   section { padding: 84px 0 0; }
-  .eyebrow { font-size: .8rem; font-weight: 800; letter-spacing: .16em; color: var(--c2); text-transform: uppercase; }
+  .eyebrow { font-size: .8rem; font-weight: 800; letter-spacing: .16em; color: var(--c1); text-transform: uppercase; }
   h2 { font-size: clamp(1.8rem, 4.4vw, 2.7rem); letter-spacing: -0.04em; line-height: 1.15; margin: 8px 0 10px; }
   .lead { color: var(--sub); margin: 0 0 30px; max-width: 520px; }
 
@@ -109,8 +97,8 @@
   .tile { position: relative; background: var(--glass); border: 1px solid var(--line); border-radius: 24px; padding: 26px; overflow: hidden;
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); transition: transform .25s, border-color .25s; }
   .tile::before { content: ""; position: absolute; inset: 0; border-radius: inherit; opacity: 0; transition: opacity .3s; pointer-events: none;
-    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(124,92,255,.22), transparent 45%); }
-  .tile:hover { transform: translateY(-4px); border-color: rgba(124,92,255,.5); }
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(110,130,255,.16), transparent 45%); }
+  .tile:hover { transform: translateY(-4px); border-color: rgba(110,130,255,.45); }
   .tile:hover::before { opacity: 1; }
   .tile > * { position: relative; }
 
@@ -128,15 +116,14 @@
   .b-wide { grid-column: span 3; display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 110px; }
   .b-wide b { font-size: 1.15rem; }
   .label { font-size: .82rem; color: var(--sub); font-weight: 600; }
-  .dot { width: 46px; height: 46px; border-radius: 14px; flex: none; display: grid; place-items: center; font-weight: 800; color: #fff; }
+  .dot { width: 46px; height: 46px; border-radius: 14px; flex: none; display: grid; place-items: center; font-weight: 800; background: var(--ink); color: var(--bg); }
 
   /* 하는 일 */
   .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .card .num { font-size: 3.2rem; font-weight: 800; letter-spacing: -0.06em; line-height: 1; opacity: .9;
-    background: linear-gradient(135deg, var(--k1), var(--k2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .card .num { font-size: 3.2rem; font-weight: 800; letter-spacing: -0.06em; line-height: 1; color: var(--sub); opacity: .55; }
   .card h3 { margin: 26px 0 8px; font-size: 1.22rem; letter-spacing: -0.02em; }
   .card p { margin: 0 0 18px; color: var(--sub); font-size: .95rem; }
-  .card .line { height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--k1), var(--k2)); width: 38px; transition: width .35s; }
+  .card .line { height: 4px; border-radius: 4px; background: var(--c1); width: 38px; transition: width .35s; }
   .card:hover .line { width: 100%; }
 
   /* 목록 */
@@ -150,11 +137,11 @@
   .row p { margin: 2px 0 0; color: var(--sub); font-size: .92rem; }
   .row small { padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); font-size: .8rem; color: var(--sub); white-space: nowrap; }
   .row .go { font-size: 1.3rem; transition: transform .25s; color: var(--sub); }
-  .row:hover .go { transform: translate(4px, -4px); color: var(--c2); }
+  .row:hover .go { transform: translate(4px, -4px); color: var(--c1); }
 
   /* 하단 */
   .cta { margin-top: 96px; text-align: center; padding: 60px 24px; border-radius: 32px; border: 1px solid var(--line);
-    background: linear-gradient(135deg, rgba(124,92,255,.22), rgba(34,211,166,.14) 55%, rgba(255,138,61,.16)); }
+    background: var(--glass); }
   .cta h2 { margin-bottom: 12px; }
   .cta p { color: var(--sub); margin: 0 0 26px; }
   footer { padding: 46px 0 34px; text-align: center; color: var(--sub); font-size: .88rem; }
@@ -177,7 +164,6 @@
   @media (max-width: 560px) {
     .bar { padding-left: 14px; height: 54px; }
     .logo em { display: none; }
-    nav a { padding: 9px 15px; font-size: .88rem; }
     #menuBtn { height: 34px; }
     #theme { width: 34px; height: 34px; }
     .row { grid-template-columns: 32px 1fr 26px; }
@@ -192,23 +178,25 @@
 </head>
 <body>
 
-<div class="aurora"><i></i><i></i><i></i></div>
+<div class="aurora"><i></i></div>
 <div class="grid-bg"></div>
 
 <header>
   <div class="bar">
     <a class="logo" href="#top"><span></span><em style="font-style:normal">테스트 웹사이트</em></a>
     <div class="tools">
-      <button id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><i>+</i>메뉴</button>
+      <div class="menu">
+        <button id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><i>+</i>메뉴</button>
+        <nav id="menu">
+          <a href="#about">소개</a>
+          <a href="#work">하는 일</a>
+          <a href="#list">목록</a>
+          <a href="board.html">게시판</a>
+          <a href="game.html">게임</a>
+        </nav>
+      </div>
       <button id="theme" type="button" aria-label="밝기 전환" title="밝기 전환">◐</button>
     </div>
-    <nav id="menu">
-      <a href="#about">소개</a>
-      <a href="#work">하는 일</a>
-      <a href="#list">목록</a>
-      <a href="board.html">게시판</a>
-      <a href="game.html">게임</a>
-    </nav>
   </div>
 </header>
 
@@ -259,11 +247,11 @@
         </div>
         <div class="tile b-wide rv">
           <div><span class="label">분야</span><br><b>웹 개발</b></div>
-          <div class="dot" style="background:linear-gradient(135deg,#8b6bff,#6246ea)">W</div>
+          <div class="dot">W</div>
         </div>
         <div class="tile b-wide rv" style="--d:.06s">
           <div><span class="label">지역</span><br><b>서울</b></div>
-          <div class="dot" style="background:linear-gradient(135deg,#2bd9ad,#14a37f)">S</div>
+          <div class="dot">S</div>
         </div>
       </div>
     </section>
@@ -273,19 +261,19 @@
       <h2 class="rv">하는 일</h2>
       <p class="lead rv">주로 다루는 것을 세 가지로 정리했습니다.</p>
       <div class="cards">
-        <div class="tile card rv" style="--k1:#8b6bff;--k2:#3b9dff">
+        <div class="tile card rv">
           <div class="num">01</div>
           <h3>첫 번째 주제</h3>
           <p>이 주제에 대한 한두 줄 설명이 들어갑니다.</p>
           <div class="line"></div>
         </div>
-        <div class="tile card rv" style="--k1:#22d3a6;--k2:#3b9dff;--d:.08s">
+        <div class="tile card rv" style="--d:.08s">
           <div class="num">02</div>
           <h3>두 번째 주제</h3>
           <p>이 주제에 대한 한두 줄 설명이 들어갑니다.</p>
           <div class="line"></div>
         </div>
-        <div class="tile card rv" style="--k1:#ff8a3d;--k2:#ff5c8a;--d:.16s">
+        <div class="tile card rv" style="--d:.16s">
           <div class="num">03</div>
           <h3>세 번째 주제</h3>
           <p>이 주제에 대한 한두 줄 설명이 들어갑니다.</p>
@@ -336,7 +324,12 @@
 
   // 메뉴 펼침
   var header = document.querySelector('header'), menuBtn = document.getElementById('menuBtn');
-  document.querySelectorAll('#menu a').forEach(function (a, i) { a.style.setProperty('--i', i); });
+  document.querySelectorAll('#menu a').forEach(function (a, i, all) {
+    var rad = (24 + 82 / (all.length - 1) * i) * Math.PI / 180;
+    a.style.setProperty('--i', i);
+    a.style.setProperty('--x', Math.round(-190 * Math.cos(rad)) + 'px');
+    a.style.setProperty('--y', Math.round(190 * Math.sin(rad)) + 'px');
+  });
   function setMenu(open) { header.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
   menuBtn.addEventListener('click', function (ev) { ev.stopPropagation(); setMenu(!header.classList.contains('open')); });
   document.addEventListener('click', function () { setMenu(false); });
