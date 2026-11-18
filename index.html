@@ -46,15 +46,28 @@
     backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%); box-shadow: var(--shadow); }
   .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
   .logo span { width: 22px; height: 22px; border-radius: 7px; background: conic-gradient(from 210deg, var(--c1), var(--c4), var(--c2), var(--c3), var(--c1)); }
-  nav { display: flex; flex-direction: row; align-items: center; gap: 7px; }
-  nav a { padding: 8px 16px; border-radius: 999px; font-size: .88rem; font-weight: 700; color: #fff; white-space: nowrap;
-    transition: transform .15s, box-shadow .15s; }
+  .bar { position: relative; }
+  .tools { display: flex; align-items: center; gap: 6px; }
+  #menuBtn { height: 38px; padding: 0 16px 0 12px; border-radius: 999px; border: 0; background: var(--ink); color: var(--bg); font: inherit; font-size: .88rem; font-weight: 700;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; transition: transform .15s; }
+  #menuBtn:hover { transform: translateY(-2px); }
+  #menuBtn:active { transform: scale(.94); }
+  #menuBtn i { font-style: normal; font-size: 1.15rem; line-height: 1; transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
+  header.open #menuBtn i { transform: rotate(135deg); }
+  nav { position: absolute; top: calc(100% + 12px); right: 6px; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; pointer-events: none; }
+  header.open nav { pointer-events: auto; }
+  nav a { padding: 11px 20px; border-radius: 999px; font-size: .95rem; font-weight: 700; color: #fff; white-space: nowrap; box-shadow: 0 10px 24px rgba(0,0,0,.25);
+    opacity: 0; visibility: hidden; transform: translateY(-14px) scale(.4); transition: transform .15s, opacity .15s, visibility 0s .15s; }
+  header.open nav a { opacity: 1; visibility: visible; transform: none; transition: transform .15s;
+    animation: pop .5s cubic-bezier(.34,1.56,.64,1) backwards; animation-delay: calc(var(--i, 0) * 55ms); }
+  @keyframes pop { from { opacity: 0; transform: translateY(-22px) scale(.2) rotate(-10deg); } }
   nav a:nth-child(1) { background: linear-gradient(135deg, #8b6bff, #6246ea); }
   nav a:nth-child(2) { background: linear-gradient(135deg, #2bd9ad, #14a37f); }
   nav a:nth-child(3) { background: linear-gradient(135deg, #ff9d57, #ef6b1f); }
   nav a:nth-child(4) { background: linear-gradient(135deg, #4fb0ff, #2a7de1); }
   nav a:nth-child(5) { background: linear-gradient(135deg, #ff7aa8, #e0457b); }
-  nav a:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.28); }
+  header.open nav a:hover { transform: translateY(-3px) scale(1.07); }
+  header.open nav a:active { transform: scale(.95); }
   #theme { width: 38px; height: 38px; margin-left: 4px; border-radius: 50%; border: 1px solid var(--line); background: var(--glass2);
     color: var(--ink); cursor: pointer; font-size: 1rem; display: grid; place-items: center; transition: transform .3s; }
   #theme:hover { transform: rotate(40deg); }
@@ -164,8 +177,8 @@
   @media (max-width: 560px) {
     .bar { padding-left: 14px; height: 54px; }
     .logo em { display: none; }
-    nav { gap: 3px; }
-    nav a { padding: 7px 8px; font-size: .78rem; }
+    nav a { padding: 9px 15px; font-size: .88rem; }
+    #menuBtn { height: 34px; }
     #theme { width: 34px; height: 34px; }
     .row { grid-template-columns: 32px 1fr 26px; }
     .row small { display: none; }
@@ -185,13 +198,16 @@
 <header>
   <div class="bar">
     <a class="logo" href="#top"><span></span><em style="font-style:normal">테스트 웹사이트</em></a>
-    <nav>
+    <div class="tools">
+      <button id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><i>+</i>메뉴</button>
+      <button id="theme" type="button" aria-label="밝기 전환" title="밝기 전환">◐</button>
+    </div>
+    <nav id="menu">
       <a href="#about">소개</a>
       <a href="#work">하는 일</a>
       <a href="#list">목록</a>
       <a href="board.html">게시판</a>
       <a href="game.html">게임</a>
-      <button id="theme" type="button" aria-label="밝기 전환" title="밝기 전환">◐</button>
     </nav>
   </div>
 </header>
@@ -317,6 +333,14 @@
     if (light) root.removeAttribute('data-theme'); else root.setAttribute('data-theme', 'light');
     try { localStorage.setItem('theme', light ? 'dark' : 'light'); } catch (e) {}
   });
+
+  // 메뉴 펼침
+  var header = document.querySelector('header'), menuBtn = document.getElementById('menuBtn');
+  document.querySelectorAll('#menu a').forEach(function (a, i) { a.style.setProperty('--i', i); });
+  function setMenu(open) { header.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+  menuBtn.addEventListener('click', function (ev) { ev.stopPropagation(); setMenu(!header.classList.contains('open')); });
+  document.addEventListener('click', function () { setMenu(false); });
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') setMenu(false); });
 
   // 스크롤 등장
   var items = document.querySelectorAll('.rv');
