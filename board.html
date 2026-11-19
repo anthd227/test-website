@@ -2,9 +2,16 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
 <title>게시판 · 명리서재</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="명리서재">
+<meta property="og:title" content="게시판 · 명리서재">
+<meta property="og:description" content="생년월일시로 사주팔자를 세우고 풀이하는 사주 사이트">
+<meta property="og:url" content="https://anthd227.github.io/test-website/board.html">
+<meta property="og:image" content="https://anthd227.github.io/test-website/assets/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
@@ -14,8 +21,6 @@
   .wrap { max-width: 860px; }
 
   .head { padding: 70px 0 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  .eyebrow { font-size: .8rem; font-weight: 800; letter-spacing: .16em; color: var(--c1); }
-  h1 { font-size: clamp(2rem, 6vw, 3.2rem); letter-spacing: -0.04em; line-height: 1.1; margin: 6px 0 0; }
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 11px 20px; border-radius: 12px; font-weight: 700; font-size: .93rem; cursor: pointer;
     border: 1px solid var(--line); background: var(--glass); transition: transform .15s; }
   .btn:hover { transform: translateY(-2px); }
@@ -62,11 +67,12 @@
 </style>
 </head>
 <body>
+<noscript><p style="padding:24px;text-align:center">이 사이트는 자바스크립트를 켜야 이용할 수 있습니다.</p></noscript>
 
 <main class="wrap">
   <div class="head">
     <div>
-      <div class="eyebrow">BOARD</div>
+      <div class="eyebrow">談 · 게시판</div>
       <h1>게시판</h1>
     </div>
     <div id="headActs"></div>

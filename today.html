@@ -2,10 +2,17 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
 <title>오늘의 운세 · 명리서재</title>
 <meta name="description" content="오늘의 일진이 내 일간에 어떤 기운으로 들어오는지, 한 주의 흐름과 함께 봅니다.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="명리서재">
+<meta property="og:title" content="오늘의 운세 · 명리서재">
+<meta property="og:description" content="오늘의 일진이 내 일간에 어떤 기운으로 들어오는지, 한 주의 흐름과 함께 봅니다.">
+<meta property="og:url" content="https://anthd227.github.io/test-website/today.html">
+<meta property="og:image" content="https://anthd227.github.io/test-website/assets/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
@@ -21,7 +28,7 @@
   .who { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
   .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
   .week button { padding: 10px 4px; border-radius: 14px; border: 1px solid var(--line); background: var(--glass); cursor: pointer; text-align: center; font-size: .76rem; color: var(--sub); display: grid; gap: 4px; justify-items: center; }
-  .week button.on { border-color: var(--c1); background: color-mix(in srgb, var(--c1) 10%, var(--bg2)); }
+  .week button.on { border-color: var(--c1); background: var(--glass2); background: color-mix(in srgb, var(--c1) 10%, var(--bg2)); }
   .week button b { color: var(--ink); font-size: .86rem; }
   .week .sc { font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
   .week .pip { width: 100%; height: 4px; border-radius: 4px; background: var(--glass2); overflow: hidden; }
@@ -30,11 +37,14 @@
   .cat h3 span { font-family: var(--serif); color: var(--c1); font-weight: 900; }
   @media (max-width: 620px) {
     .top, .day-card { grid-template-columns: 1fr; justify-items: start; }
-    .week { grid-template-columns: repeat(7, minmax(62px, 1fr)); overflow-x: auto; padding-bottom: 6px; }
+    .week { grid-template-columns: repeat(7, minmax(66px, 1fr)); overflow-x: auto; padding-bottom: 6px; margin: 0 -16px; padding-left: 16px; padding-right: 16px; scrollbar-width: none; }
+    .who .btns { width: 100%; }
+    .who .btns .btn { flex: 1; }
   }
 </style>
 </head>
 <body>
+<noscript><p style="padding:24px;text-align:center">이 사이트는 자바스크립트를 켜야 이용할 수 있습니다.</p></noscript>
 
 <main class="wrap narrow">
   <div class="page-head">
@@ -110,7 +120,7 @@
     $('dayDate').textContent = dt.y + '년 ' + dt.m + '월 ' + dt.d + '일 ' + WEEK[dt.w] + '요일' + (lunar ? ' · 음력 ' + (lunar.leap ? '윤' : '') + lunar.m + '월 ' + lunar.d + '일' : '');
     $('dayTitle').textContent = (offset === 0 ? '오늘은 ' : '') + S.gzK(gz) + '(' + S.gzH(gz) + ')일';
     var se = S.stemEl(gz.s), be = S.BR_EL[gz.b];
-    $('dayDesc').textContent = '천간은 ' + D.STEM_INFO[gz.s].symbol + '을(를) 뜻하는 ' + S.STEM_K[gz.s] + S.EL[se] + ', 지지는 ' + S.ANIMAL[gz.b] + '의 ' + S.BR_K[gz.b] + S.EL[be] + '입니다. ' + D.EL_INFO[se].key + '의 기운이 하루를 이끕니다.';
+    $('dayDesc').textContent = '천간은 ' + S.STEM_K[gz.s] + S.EL[se] + '(' + D.STEM_INFO[gz.s].symbol + '), 지지는 ' + S.ANIMAL[gz.b] + '의 ' + S.BR_K[gz.b] + S.EL[be] + '입니다. ' + D.EL_INFO[se].key + '의 기운이 하루를 이끕니다.';
   }
 
   function drawWeek() {
@@ -127,7 +137,7 @@
     drawDay(picked);
     $('score').style.setProperty('--p', x.score);
     $('scoreNum').textContent = x.score;
-    $('tenLabel').textContent = S.STEM_K[me.s] + S.EL[S.stemEl(me.s)] + ' 일간에게 ' + S.STEM_K[x.gz.s] + S.EL[S.stemEl(x.gz.s)] + '은(는) ' + S.TEN[x.ten] + ' · ' + D.TEN_INFO[x.ten].key;
+    $('tenLabel').textContent = S.STEM_K[me.s] + S.EL[S.stemEl(me.s)] + ' 일간에게 ' + U.josa(S.STEM_K[x.gz.s] + S.EL[S.stemEl(x.gz.s)], '은', '는') + ' ' + S.TEN[x.ten] + ' · ' + D.TEN_INFO[x.ten].key;
     $('fTitle').textContent = x.f.title;
     $('fTotal').textContent = x.f.total;
     $('fWork').textContent = x.f.work; $('fMoney').textContent = x.f.money; $('fLove').textContent = x.f.love; $('fTip').textContent = x.f.tip;

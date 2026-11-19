@@ -2,10 +2,17 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
 <title>사주풀이 · 명리서재</title>
 <meta name="description" content="만세력으로 사주팔자를 세우고 오행, 십신, 신살, 대운, 세운을 풀이합니다.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="명리서재">
+<meta property="og:title" content="사주풀이 · 명리서재">
+<meta property="og:description" content="만세력으로 사주팔자를 세우고 오행, 십신, 신살, 대운, 세운을 풀이합니다.">
+<meta property="og:url" content="https://anthd227.github.io/test-website/saju.html">
+<meta property="og:image" content="https://anthd227.github.io/test-website/assets/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
@@ -26,7 +33,7 @@
   .rel-list b { font-family: var(--serif); }
   .rel-list small { display: block; color: var(--sub); }
   .help { display: grid; gap: 12px; }
-  .help .it { padding: 14px 16px; border-radius: 14px; border: 1px solid color-mix(in srgb, var(--el) 40%, transparent); background: color-mix(in srgb, var(--el) 8%, transparent); }
+  .help .it { padding: 14px 16px; border-radius: 14px; border: 1px solid var(--el); border: 1px solid color-mix(in srgb, var(--el) 40%, transparent); background: color-mix(in srgb, var(--el) 8%, transparent); }
   .help .it h3 { color: var(--el); margin-bottom: 4px; }
   @media (max-width: 620px) {
     .me-card { grid-template-columns: 84px 1fr; gap: 14px; }
@@ -34,6 +41,7 @@
 </style>
 </head>
 <body>
+<noscript><p style="padding:24px;text-align:center">이 사이트는 자바스크립트를 켜야 이용할 수 있습니다.</p></noscript>
 
 <main class="wrap narrow">
   <div id="inputView">
@@ -54,7 +62,7 @@
       </div>
       <div class="btns">
         <button class="btn sm main" id="saveBtn" type="button">내 사주로 저장</button>
-        <button class="btn sm" id="copyBtn" type="button">링크 복사</button>
+        <button class="btn sm" id="copyBtn" type="button" title="링크에 생년월일과 이름이 들어갑니다">링크 복사</button>
         <button class="btn sm" id="editBtn" type="button">다시 입력</button>
       </div>
     </div>
@@ -101,7 +109,7 @@
       <h2>합충과 신살 <small>글자 사이의 작용</small></h2>
       <div class="grid g2">
         <div class="card"><h3>합 · 충 · 형</h3><div class="rel-list" id="rRel"></div></div>
-        <div class="card"><h3>신살</h3><div class="rel-list" id="rSinsal"></div></div>
+        <div class="card"><h3>신살</h3><div class="rel-list" id="rSinsal"></div><p class="small" style="margin-top:12px">귀인과 양인은 일간 기준, 역마·도화·화개는 년지와 일지 기준, 월덕귀인은 월지 기준으로 표시합니다.</p></div>
       </div>
     </section>
 
@@ -149,7 +157,7 @@
   });
   $('copyBtn').addEventListener('click', function () {
     var b = this, url = location.href;
-    function done(ok) { b.textContent = ok ? '복사했습니다' : '복사하지 못했습니다'; setTimeout(function () { b.textContent = '링크 복사'; }, 1800); }
+    function done(ok) { b.textContent = ok ? '복사했습니다 (생년월일 포함)' : '복사하지 못했습니다'; setTimeout(function () { b.textContent = '링크 복사'; }, 2600); }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function () { done(true); }, function () { done(false); });
     else done(false);
   });
@@ -216,7 +224,7 @@
     $('rYinYang').textContent = '음양 비율은 양 ' + r.yinYang.yang + ' : 음 ' + r.yinYang.yin + '입니다. ' + (r.yinYang.yang > r.yinYang.yin + 1 ? '밖으로 드러내고 움직이는 성향이 강합니다.' : r.yinYang.yin > r.yinYang.yang + 1 ? '안으로 살피고 다지는 성향이 강합니다.' : '음양이 고르게 섞여 있습니다.');
     $('rStrength').textContent = r.strength.label;
     $('rMeter').style.left = Math.max(4, Math.min(96, r.strength.ratio * 100)) + '%';
-    $('rStrengthText').textContent = '일간 ' + S.STEM_K[day] + S.EL[dayEl] + '을(를) 돕는 기운(비겁·인성)이 전체의 약 ' + Math.round(r.strength.ratio * 100) + '%입니다. ' +
+    $('rStrengthText').textContent = '일간 ' + U.josa(S.STEM_K[day] + S.EL[dayEl], '을', '를') + ' 돕는 기운(비겁·인성)이 ' + (r.strength.ratio < 0.05 ? '거의 없습니다. ' : '전체의 약 ' + Math.round(r.strength.ratio * 100) + '%입니다. ') +
       (r.strength.deukryeong ? '태어난 달의 기운이 일간을 도와 제철을 만났습니다(득령). ' : '태어난 달의 기운은 일간을 직접 돕지 않습니다. ') +
       (r.strength.strong ? '기운이 넉넉한 편이라 재능을 밖으로 쓰고 덜어 내는 쪽이 균형에 좋습니다.' : '기운이 부족한 편이라 배우고 채우며 도와줄 사람을 곁에 두는 쪽이 균형에 좋습니다.') + ' 월지에 가중치를 둔 간이 계산이며, 실제 감명에서는 조후와 통근을 함께 봅니다.';
     var elText = [];
@@ -246,7 +254,7 @@
       return '<div class="bar-row el-' + S.mod(dayEl + i, 5) + '"><span>' + D.TENGROUP_INFO[i].name + '</span><div class="track"><div class="fill" style="width:' + (tsum ? c / tsum * 100 : 0) + '%"></div></div><span class="num">' + c + '</span></div>';
     }).join('');
     var tt = '';
-    r.tenGroups.forEach(function (c, i) { if (c === tmax && c > 0) tt += '<h3>' + D.TENGROUP_INFO[i].name + '이(가) 두드러집니다</h3><p style="margin-bottom:14px">' + D.TENGROUP_INFO[i].desc + '</p>'; });
+    r.tenGroups.forEach(function (c, i) { if (c === tmax && c > 0) tt += '<h3>' + U.josa(D.TENGROUP_INFO[i].name, '이', '가') + ' 두드러집니다</h3><p style="margin-bottom:14px">' + D.TENGROUP_INFO[i].desc + '</p>'; });
     r.tenGroups.forEach(function (c, i) { if (c === 0) tt += '<p class="small"><b style="color:var(--ink)">' + D.TENGROUP_INFO[i].name + ' 없음</b> · ' + D.TENGROUP_INFO[i].none + '</p>'; });
     $('rTenText').innerHTML = tt;
     var rows = '<tr><th>자리</th><th>글자</th><th>십신</th><th>뜻</th></tr>';
@@ -256,6 +264,7 @@
       var b = D.TEN_INFO[c.branchTen]; rows += '<tr><td style="white-space:nowrap">' + S.PILLAR_NAME[i].charAt(0) + '지</td><td class="h">' + brHtml(c.b) + '</td><td><b>' + S.TEN[c.branchTen] + '</b><br><span class="muted small">' + b.key + '</span></td><td>' + b.desc + '</td></tr>';
     });
     $('rTenTable').innerHTML = rows;
+    U.labelTables();
 
     // 합충 · 신살
     $('rRel').innerHTML = r.relations.length ? r.relations.map(function (x) {
@@ -280,7 +289,7 @@
         return '<div class="luck' + (on ? ' now' : '') + '"><div class="age">' + d.age + '세</div><div>' + d.year + '년</div>' + U.miniGz(d) + '<div>' + S.TEN[d.stemTen] + '</div><div>' + S.TEN[d.branchTen] + '</div><div>' + S.STAGE[d.stage] + '</div></div>';
       }).join('');
       $('rDaeunNow').innerHTML = nowD
-        ? '<b>지금은 ' + S.gzK(nowD) + '(' + S.gzH(nowD) + ') 대운</b> (' + nowD.age + '~' + (nowD.age + 9) + '세). 천간은 ' + S.TEN[nowD.stemTen] + '(' + D.TEN_INFO[nowD.stemTen].key + '), 지지는 ' + S.TEN[nowD.branchTen] + '(' + D.TEN_INFO[nowD.branchTen].key + ')의 기운입니다. ' + D.TEN_INFO[nowD.stemTen].desc + ' 12운성은 ' + S.STAGE[nowD.stage] + ' — ' + D.STAGE_INFO[nowD.stage].desc
+        ? '<b>지금은 ' + S.gzK(nowD) + '(' + S.gzH(nowD) + ') 대운</b> (' + nowD.age + '~' + (nowD.age + 9) + '세). 천간은 ' + S.TEN[nowD.stemTen] + '(' + D.TEN_INFO[nowD.stemTen].key + '), 지지는 ' + S.TEN[nowD.branchTen] + '(' + D.TEN_INFO[nowD.branchTen].key + ')의 기운입니다. ' + D.LUCK[nowD.stemTen].dae + ' ' + (nowD.branchTen !== nowD.stemTen ? '후반으로 갈수록 ' + S.TEN[nowD.branchTen] + '의 색이 짙어집니다. ' + D.LUCK[nowD.branchTen].dae + ' ' : '') + '12운성은 ' + S.STAGE[nowD.stage] + ' — ' + D.STAGE_INFO[nowD.stage].desc
         : (age < dn.num ? '<b>아직 첫 대운이 시작되기 전입니다.</b> 이 시기에는 월주의 영향을 크게 받습니다.' : '<b>표시된 대운 범위를 지났습니다.</b>');
     } else {
       $('rDaeunInfo').textContent = '성별을 입력하면 대운을 볼 수 있습니다.'; $('rDaeun').innerHTML = ''; $('rDaeunNow').classList.add('hide');
@@ -294,7 +303,7 @@
     }
     $('rYears').innerHTML = yh;
     var yrel = S.branchRel(nowY.b, P[2].b).filter(function (n) { return n !== '같은 지지'; });
-    $('rYearNow').innerHTML = '<b>' + thisYear + '년 ' + S.gzK(nowY) + '(' + S.gzH(nowY) + ')년</b> — 천간 ' + S.TEN[nowY.stemTen] + '의 해입니다. ' + D.TEN_INFO[nowY.stemTen].desc + ' 올해의 열쇠말은 ' + D.TEN_INFO[nowY.stemTen].key + '. ' +
+    $('rYearNow').innerHTML = '<b>' + thisYear + '년 ' + S.gzK(nowY) + '(' + S.gzH(nowY) + ')년</b> — 천간 ' + S.TEN[nowY.stemTen] + '의 해입니다. ' + D.LUCK[nowY.stemTen].se + ' 올해의 열쇠말은 ' + D.TEN_INFO[nowY.stemTen].key + '. ' +
       (yrel.length ? '올해의 지지가 일지와 ' + yrel.join('·') + ' 관계입니다. ' + (D.REL_INFO[yrel[0]] || '') : '') + ' 사주의 한 해는 입춘에 시작합니다.';
 
     $('todayLink').href = 'today.html?' + U.toQuery(v);

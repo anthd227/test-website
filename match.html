@@ -2,10 +2,17 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
 <title>궁합 · 명리서재</title>
 <meta name="description" content="두 사람의 일간과 일지, 오행의 보완 관계로 궁합을 봅니다.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="명리서재">
+<meta property="og:title" content="궁합 · 명리서재">
+<meta property="og:description" content="두 사람의 일간과 일지, 오행의 보완 관계로 궁합을 봅니다.">
+<meta property="og:url" content="https://anthd227.github.io/test-website/match.html">
+<meta property="og:image" content="https://anthd227.github.io/test-website/assets/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
@@ -33,6 +40,7 @@
 </style>
 </head>
 <body>
+<noscript><p style="padding:24px;text-align:center">이 사이트는 자바스크립트를 켜야 이용할 수 있습니다.</p></noscript>
 
 <main class="wrap">
   <div class="page-head">
@@ -46,7 +54,8 @@
       <div class="card solid pair"><h2><span>甲</span>첫 번째 사람</h2><div id="formA" style="margin-top:14px"></div></div>
       <div class="card solid pair"><h2><span>乙</span>두 번째 사람</h2><div id="formB" style="margin-top:14px"></div></div>
     </div>
-    <div class="msg" id="msg" style="margin-top:12px"></div>
+    <p class="small muted" style="margin:12px 0 0">태어난 시각을 알면 "시간을 모릅니다"를 풀고 입력해 주세요. 일주는 날짜만으로도 정해집니다.</p>
+    <div class="msg" id="msg" style="margin-top:6px"></div>
     <button class="btn main block" id="goBtn" type="button" style="margin-top:6px">궁합 보기</button>
   </div>
 
@@ -66,7 +75,7 @@
 (function () {
   var S = Saju, D = SajuData, U = SajuSite;
   function $(id) { return document.getElementById(id); }
-  var opt = { advanced: false, requireGender: false, submit: false };
+  var opt = { advanced: false, requireGender: false, submit: false, unknownDefault: true };
   var fa = U.birthForm($('formA'), opt), fb = U.birthForm($('formB'), opt);
   var p = U.getProfile(); if (p) fa.set(p);
   [fa, fb].forEach(function (f) { f.form.addEventListener('submit', function (ev) { ev.preventDefault(); run(); }); });
@@ -91,7 +100,7 @@
 
     // 일간
     var rel = S.mod(S.stemEl(B[2].s) - S.stemEl(A[2].s), 5), me = D.MATCH_EL[rel];
-    add('일간의 관계 · ' + S.STEM_H[A[2].s] + S.EL[S.stemEl(A[2].s)] + ' 과 ' + S.STEM_H[B[2].s] + S.EL[S.stemEl(B[2].s)], me.d,
+    add('일간의 관계 · ' + S.STEM_H[A[2].s] + S.EL[S.stemEl(A[2].s)] + ' · ' + S.STEM_H[B[2].s] + S.EL[S.stemEl(B[2].s)], me.d,
       na + '의 입장에서 ' + me.name + '입니다. ' + me.t);
     var sr = S.stemRel(A[2].s, B[2].s);
     if (sr === '합') add('일간의 합 · ' + S.STEM_H[A[2].s] + S.STEM_H[B[2].s] + ' 합', 10, '두 사람의 일간이 천간합을 이룹니다. 서로에게 자연스럽게 끌리고, 함께 있을 때 하나의 팀처럼 움직입니다.');
@@ -111,8 +120,8 @@
 
     // 오행 보완
     var fill = [];
-    ra.lackEls.forEach(function (e) { if (count(rb, e) >= 2) fill.push(nb + '이(가) ' + na + '에게 없는 ' + S.EL[e] + ' 기운을 채워 줍니다.'); });
-    rb.lackEls.forEach(function (e) { if (count(ra, e) >= 2) fill.push(na + '이(가) ' + nb + '에게 없는 ' + S.EL[e] + ' 기운을 채워 줍니다.'); });
+    ra.lackEls.forEach(function (e) { if (count(rb, e) >= 2) fill.push(U.josa(nb, '이', '가') + ' ' + na + '에게 없는 ' + S.EL[e] + ' 기운을 채워 줍니다.'); });
+    rb.lackEls.forEach(function (e) { if (count(ra, e) >= 2) fill.push(U.josa(na, '이', '가') + ' ' + nb + '에게 없는 ' + S.EL[e] + ' 기운을 채워 줍니다.'); });
     if (fill.length) add('오행의 보완', Math.min(10, fill.length * 5), fill.join(' ') + ' 서로의 빈 곳을 메워 주는 좋은 조합입니다.');
     else {
       var same = ra.manyEls.filter(function (e) { return rb.manyEls.indexOf(e) >= 0; });

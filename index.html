@@ -2,10 +2,17 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
 <title>명리서재 · 사주풀이와 만세력</title>
 <meta name="description" content="생년월일시로 사주팔자를 세우고 오행, 십신, 대운, 오늘의 운세, 궁합까지 차근차근 읽어 보는 사주풀이 사이트">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="명리서재">
+<meta property="og:title" content="명리서재 · 사주풀이와 만세력">
+<meta property="og:description" content="생년월일시로 사주팔자를 세우고 오행, 십신, 대운, 오늘의 운세, 궁합까지 차근차근 읽어 보는 사주풀이 사이트">
+<meta property="og:url" content="https://anthd227.github.io/test-website/">
+<meta property="og:image" content="https://anthd227.github.io/test-website/assets/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
@@ -29,17 +36,18 @@
   .menu-card .ic { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; font-family: var(--serif); font-weight: 900; font-size: 1.4rem; background: var(--glass2); border: 1px solid var(--line); margin-bottom: 16px; color: var(--c1); }
   .menu-card h3 { font-size: 1.15rem; }
   .step .n { font-family: var(--serif); font-size: 2.4rem; font-weight: 900; line-height: 1; color: var(--c1); opacity: .8; margin-bottom: 14px; }
-  .el-card { text-align: center; padding: 20px 12px; border-color: color-mix(in srgb, var(--el) 40%, transparent); }
+  .el-card { text-align: center; padding: 20px 12px; border-color: var(--el); border-color: color-mix(in srgb, var(--el) 40%, transparent); }
   .el-card b { display: block; font-family: var(--serif); font-size: 2.3rem; line-height: 1.1; color: var(--el); }
   .el-card strong { display: block; margin: 4px 0; }
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; padding-top: 40px; gap: 26px; }
     .today { grid-template-columns: 1fr; }
   }
-  @media (max-width: 420px) { .today .three { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 420px) { .today .three { grid-template-columns: repeat(3, 1fr); } .hero .btns .btn { flex: 1; } }
 </style>
 </head>
 <body>
+<noscript><p style="padding:24px;text-align:center">이 사이트는 자바스크립트를 켜야 이용할 수 있습니다.</p></noscript>
 
 <main>
   <div class="wrap">

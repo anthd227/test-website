@@ -2,10 +2,17 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
 <title>일주 사전 · 명리서재</title>
 <meta name="description" content="갑자부터 계해까지 육십갑자 60가지 일주의 성향을 찾아봅니다.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="명리서재">
+<meta property="og:title" content="일주 사전 · 명리서재">
+<meta property="og:description" content="갑자부터 계해까지 육십갑자 60가지 일주의 성향을 찾아봅니다.">
+<meta property="og:url" content="https://anthd227.github.io/test-website/ilju.html">
+<meta property="og:image" content="https://anthd227.github.io/test-website/assets/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
@@ -18,7 +25,7 @@
   .list { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 10px; }
   .ij { text-align: left; padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--glass); cursor: pointer; display: grid; gap: 4px; transition: transform .15s, border-color .15s; }
   .ij:hover { transform: translateY(-2px); border-color: var(--c1); }
-  .ij.on { border-color: var(--c1); background: color-mix(in srgb, var(--c1) 9%, var(--bg2)); }
+  .ij.on { border-color: var(--c1); background: var(--glass2); background: color-mix(in srgb, var(--c1) 9%, var(--bg2)); }
   .ij .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .ij .mini-gz { font-size: 1.7rem; }
   .ij b { font-size: .95rem; }
@@ -30,11 +37,15 @@
   @media (max-width: 620px) {
     .detail { grid-template-columns: 1fr; }
     .detail .two { max-width: 180px; }
-    .list { grid-template-columns: repeat(2, 1fr); }
+    .list { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .ij { padding: 12px; }
+    .ij .mini-gz { font-size: 1.45rem; }
+    #filter { flex-wrap: nowrap; overflow-x: auto; margin: 0 -16px; padding: 0 16px 4px; scrollbar-width: none; }
   }
 </style>
 </head>
 <body>
+<noscript><p style="padding:24px;text-align:center">이 사이트는 자바스크립트를 켜야 이용할 수 있습니다.</p></noscript>
 
 <main class="wrap">
   <div class="page-head">
@@ -103,7 +114,10 @@
       '<p style="margin:0 0 14px">' + it[2] + '</p>' +
       '<dl class="kv"><dt>일간</dt><dd><b>' + S.STEM_K[g.s] + S.EL[S.stemEl(g.s)] + ' · ' + si.symbol + '</b> — ' + si.summary + '</dd>' +
       '<dt>일지</dt><dd><b>' + S.BR_K[g.b] + S.EL[S.BR_EL[g.b]] + ' · ' + S.ANIMAL[g.b] + '</b> — ' + D.BRANCH_INFO[g.b].desc + '</dd>' +
-      '<dt>일지 십신</dt><dd><b>' + S.TEN[bt] + '</b> (' + D.TEN_INFO[bt].key + ') — 배우자 자리에 놓인 기운입니다. ' + D.TEN_INFO[bt].desc + '</dd>' +
+      '<dt>일지 십신</dt><dd><b>' + S.TEN[bt] + '</b> (' + D.TEN_INFO[bt].key + ') — ' + D.TEN_INFO[bt].desc + '</dd>' +
+      '<dt>배우자와 가정</dt><dd>' + D.ILJI[bt].home + '</dd>' +
+      '<dt>일과 재물</dt><dd>' + D.ILJI[bt].work + ' 일간의 성향으로는 ' + si.work + ' 쪽이 어울립니다.</dd>' +
+      '<dt>연애</dt><dd>' + si.love + '</dd>' +
       '<dt>12운성</dt><dd><b>' + S.STAGE[st] + '</b> — ' + D.STAGE_INFO[st].desc + '</dd>' +
       '<dt>지장간</dt><dd>' + S.HIDDEN[g.b].map(function (x) { return '<span class="gz-inline el-' + S.stemEl(x) + '">' + S.STEM_H[x] + '</span> ' + S.TEN[S.tenGod(g.s, x)]; }).join(' · ') + '</dd>' +
       '<dt>공망</dt><dd>' + S.BR_H[gm[0]] + S.BR_H[gm[1]] + ' (' + S.BR_K[gm[0]] + '·' + S.BR_K[gm[1]] + ')</dd>' +

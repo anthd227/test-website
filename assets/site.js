@@ -29,6 +29,21 @@
     if (text !== undefined && text !== null) n.textContent = text;
     return n;
   }
+  // 받침에 따라 조사 고르기
+  function josa(word, a, b) {
+    var c = String(word).charCodeAt(String(word).length - 1);
+    if (c < 0xAC00 || c > 0xD7A3) return word + a;
+    return word + ((c - 0xAC00) % 28 ? a : b);
+  }
+  // 좁은 화면에서 표를 카드로 풀 때 쓸 항목 이름
+  function labelTables() {
+    document.querySelectorAll('table.tbl').forEach(function (t) {
+      var ths = t.querySelectorAll('th');
+      t.querySelectorAll('tr').forEach(function (tr) {
+        tr.querySelectorAll('td').forEach(function (td, i) { if (ths[i]) td.setAttribute('data-label', ths[i].textContent); });
+      });
+    });
+  }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
   function build() {
@@ -45,7 +60,7 @@
     document.body.insertBefore(head, bg.nextSibling);
 
     var sheet = el('div', 'sheet'); sheet.id = 'sheet';
-    sheet.innerHTML = '<div class="sheet-panel" role="dialog" aria-label="전체 메뉴"><div class="grab"></div><h4>바로 보기</h4>' +
+    sheet.innerHTML = '<div class="sheet-panel" role="dialog" aria-label="전체 메뉴"><div class="grab"></div><button type="button" class="close" id="sheetClose">닫기</button><h4>바로 보기</h4>' +
       '<a class="item' + on('index.html') + '" href="./"><span class="ic">家</span><span><b>홈</b><small>오늘의 일진과 빠른 사주 보기</small></span></a>' +
       MENU.slice(0, 3).map(item).join('') + '<h4>읽을거리</h4>' + MENU.slice(3).map(item).join('') + '</div>';
     function item(m) { return '<a class="item' + on(m.href) + '" href="' + m.href + '"><span class="ic">' + m.ic + '</span><span><b>' + m.name + '</b><small>' + m.desc + '</small></span></a>'; }
@@ -69,6 +84,7 @@
     document.getElementById('menuBtn').addEventListener('click', function () { setSheet(true); });
     document.getElementById('tabMore').addEventListener('click', function () { setSheet(true); });
     sheet.addEventListener('click', function (ev) { if (ev.target === sheet) setSheet(false); });
+    document.getElementById('sheetClose').addEventListener('click', function () { setSheet(false); });
     document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') setSheet(false); });
   }
   if (document.body) build(); else document.addEventListener('DOMContentLoaded', build);
@@ -178,6 +194,7 @@
       return v;
     }
     function showError(t) { q('msg').textContent = t || ''; }
+    if (opts.unknownDefault) q('unknown').checked = true;
     if (opts.value) set(opts.value); else { syncCal(); syncTime(); }
     return { form: form, get: get, set: set, showError: showError };
   }
@@ -198,6 +215,6 @@
     return p.m + '월 ' + p.d + '일 ' + (p.h < 10 ? '0' : '') + p.h + ':' + (p.mi < 10 ? '0' : '') + p.mi;
   }
 
-  window.SajuSite = { SITE: SITE, el: el, esc: esc, getProfile: getProfile, saveProfile: saveProfile, clearProfile: clearProfile,
+  window.SajuSite = { SITE: SITE, el: el, esc: esc, josa: josa, labelTables: labelTables, getProfile: getProfile, saveProfile: saveProfile, clearProfile: clearProfile,
     toQuery: toQuery, fromQuery: fromQuery, birthForm: birthForm, gzTile: gzTile, miniGz: miniGz, fmtKst: fmtKst };
 })();
