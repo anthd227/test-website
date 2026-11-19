@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>일주 사전 · 명리서재</title>
+<meta name="description" content="갑자부터 계해까지 육십갑자 60가지 일주의 성향을 찾아봅니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/saju-core.js"></script>
+<script src="assets/saju-data.js"></script>
+<script src="assets/site.js"></script>
+<style>
+  .tools { display: grid; gap: 12px; margin-bottom: 18px; }
+  .list { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 10px; }
+  .ij { text-align: left; padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--glass); cursor: pointer; display: grid; gap: 4px; transition: transform .15s, border-color .15s; }
+  .ij:hover { transform: translateY(-2px); border-color: var(--c1); }
+  .ij.on { border-color: var(--c1); background: color-mix(in srgb, var(--c1) 9%, var(--bg2)); }
+  .ij .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .ij .mini-gz { font-size: 1.7rem; }
+  .ij b { font-size: .95rem; }
+  .ij small { color: var(--sub); font-size: .8rem; }
+  .detail { display: grid; grid-template-columns: 150px 1fr; gap: 24px; margin-bottom: 22px; scroll-margin-top: 90px; }
+  .detail .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-content: start; }
+  .detail h2 { margin: 4px 0 8px; }
+  .nav2 { display: flex; justify-content: space-between; gap: 10px; margin-top: 18px; }
+  @media (max-width: 620px) {
+    .detail { grid-template-columns: 1fr; }
+    .detail .two { max-width: 180px; }
+    .list { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="page-head">
+    <div class="eyebrow">六十甲子 · 일주 사전</div>
+    <h1>육십갑자 일주 사전</h1>
+    <p class="lead">일주는 태어난 날의 천간과 지지입니다. 천간은 나 자신, 지지는 배우자 자리이자 내가 딛고 선 바탕을 뜻합니다. 내 일주를 모른다면 <a href="saju.html" style="color:var(--c1);font-weight:700">사주풀이</a>에서 먼저 확인해 보세요.</p>
+  </div>
+
+  <div id="detail"></div>
+
+  <div class="tools">
+    <input type="search" id="q" placeholder="일주 이름이나 열쇠말로 찾기 (예: 갑자, 丙午, 재물)" aria-label="일주 찾기">
+    <div class="chips" id="filter"></div>
+  </div>
+  <div class="list" id="list"></div>
+  <p class="muted small hide" id="empty" style="padding:30px 0;text-align:center">찾는 일주가 없습니다.</p>
+</main>
+
+<script>
+(function () {
+  var S = Saju, D = SajuData, U = SajuSite;
+  function $(id) { return document.getElementById(id); }
+  var stemFilter = -1, sel = -1, mine = -1;
+  var p = U.getProfile();
+  if (p) { var r = S.calc(p); if (!r.error) mine = S.ganziIndex(r.pillars[2].s, r.pillars[2].b); }
+
+  $('filter').innerHTML = '<button type="button" class="chip on" data-s="-1">전체</button>' + S.STEM_H.map(function (h, i) {
+    return '<button type="button" class="chip" data-s="' + i + '"><span class="gz-inline el-' + S.stemEl(i) + '">' + h + '</span> ' + S.STEM_K[i] + S.EL[S.stemEl(i)] + '</button>';
+  }).join('');
+  $('filter').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button'); if (!b) return;
+    stemFilter = +b.getAttribute('data-s');
+    this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+    drawList();
+  });
+  $('q').addEventListener('input', drawList);
+
+  function drawList() {
+    var q = $('q').value.trim(), h = '', n = 0;
+    for (var i = 0; i < 60; i++) {
+      var g = S.ganziOf(i), it = D.ILJU[i];
+      if (stemFilter >= 0 && g.s !== stemFilter) continue;
+      if (q && (S.gzK(g) + S.gzH(g) + it[0] + it[1] + S.ANIMAL[g.b]).indexOf(q) < 0) continue;
+      n++;
+      h += '<button type="button" class="ij' + (i === sel ? ' on' : '') + '" data-i="' + i + '"><span class="top">' + U.miniGz(g) + (i === mine ? '<span class="tag hot">내 일주</span>' : '') + '</span><b>' + S.gzK(g) + '일주</b><small>' + it[0] + '</small><small>' + it[1] + '</small></button>';
+    }
+    $('list').innerHTML = h; $('empty').classList.toggle('hide', n > 0);
+  }
+  $('list').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button'); if (!b) return;
+    location.hash = '#' + b.getAttribute('data-i');
+  });
+
+  function drawDetail(scroll) {
+    var box = $('detail');
+    if (sel < 0) { box.innerHTML = ''; return; }
+    var g = S.ganziOf(sel), it = D.ILJU[sel], si = D.STEM_INFO[g.s], bt = S.tenGod(g.s, S.mainStem(g.b)), st = S.stage(g.s, g.b);
+    var start = sel - sel % 10, gm = [(start + 10) % 12, (start + 11) % 12];
+    var tags = [];
+    if ([16, 46, 28, 34].indexOf(sel) >= 0) tags.push('괴강');
+    if ([40, 31, 22, 13, 4, 58, 49].indexOf(sel) >= 0) tags.push('백호');
+    var prev = S.ganziOf(sel - 1), next = S.ganziOf(sel + 1);
+    box.innerHTML = '<div class="card solid detail" id="detailCard"><div class="two">' + U.gzTile('s', g.s) + U.gzTile('b', g.b, S.ANIMAL[g.b]) + '</div><div>' +
+      '<div class="label">' + (sel + 1) + '번째 간지' + (sel === mine ? ' · 내 일주' : '') + '</div><h2>' + S.gzK(g) + '일주 · ' + it[0] + '</h2>' +
+      '<div class="chips" style="margin-bottom:12px">' + it[1].split('·').map(function (k) { return '<span class="chip">' + k + '</span>'; }).join('') + tags.map(function (k) { return '<span class="chip" style="color:var(--c1)">' + k + '</span>'; }).join('') + '</div>' +
+      '<p style="margin:0 0 14px">' + it[2] + '</p>' +
+      '<dl class="kv"><dt>일간</dt><dd><b>' + S.STEM_K[g.s] + S.EL[S.stemEl(g.s)] + ' · ' + si.symbol + '</b> — ' + si.summary + '</dd>' +
+      '<dt>일지</dt><dd><b>' + S.BR_K[g.b] + S.EL[S.BR_EL[g.b]] + ' · ' + S.ANIMAL[g.b] + '</b> — ' + D.BRANCH_INFO[g.b].desc + '</dd>' +
+      '<dt>일지 십신</dt><dd><b>' + S.TEN[bt] + '</b> (' + D.TEN_INFO[bt].key + ') — 배우자 자리에 놓인 기운입니다. ' + D.TEN_INFO[bt].desc + '</dd>' +
+      '<dt>12운성</dt><dd><b>' + S.STAGE[st] + '</b> — ' + D.STAGE_INFO[st].desc + '</dd>' +
+      '<dt>지장간</dt><dd>' + S.HIDDEN[g.b].map(function (x) { return '<span class="gz-inline el-' + S.stemEl(x) + '">' + S.STEM_H[x] + '</span> ' + S.TEN[S.tenGod(g.s, x)]; }).join(' · ') + '</dd>' +
+      '<dt>공망</dt><dd>' + S.BR_H[gm[0]] + S.BR_H[gm[1]] + ' (' + S.BR_K[gm[0]] + '·' + S.BR_K[gm[1]] + ')</dd>' +
+      '<dt>강점</dt><dd>' + si.good + '</dd><dt>유의할 점</dt><dd>' + si.care + '</dd></dl>' +
+      '<div class="nav2"><a class="btn sm" href="#' + S.mod(sel - 1, 60) + '">← ' + S.gzK(prev) + '</a><a class="btn sm" href="#' + S.mod(sel + 1, 60) + '">' + S.gzK(next) + ' →</a></div></div></div>';
+    if (scroll) document.getElementById('detailCard').scrollIntoView({ block: 'start' });
+  }
+
+  function route(scroll) {
+    var n = parseInt(location.hash.slice(1), 10);
+    sel = n >= 0 && n < 60 ? n : (mine >= 0 && !location.hash ? mine : -1);
+    drawDetail(scroll); drawList();
+  }
+  window.addEventListener('hashchange', function () { route(true); });
+  route(false);
+})();
+</script>
+</body>
+</html>

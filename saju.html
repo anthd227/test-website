@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>사주풀이 · 명리서재</title>
+<meta name="description" content="만세력으로 사주팔자를 세우고 오행, 십신, 신살, 대운, 세운을 풀이합니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/saju-core.js"></script>
+<script src="assets/saju-data.js"></script>
+<script src="assets/site.js"></script>
+<style>
+  .res-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding: 46px 0 18px; }
+  .res-head h1 { font-size: clamp(1.7rem, 5vw, 2.5rem); margin: 6px 0 6px; }
+  .sec { padding-top: 34px; }
+  .sec > h2 { display: flex; align-items: baseline; gap: 10px; }
+  .sec > h2 small { font-family: inherit; font-size: .82rem; font-weight: 500; color: var(--sub); letter-spacing: 0; }
+  .me-card { display: grid; grid-template-columns: 120px 1fr; gap: 22px; align-items: start; }
+  .rel-list { display: grid; gap: 10px; }
+  .rel-list > div { display: grid; gap: 4px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: .93rem; }
+  .rel-list > div:last-child { border-bottom: 0; }
+  .rel-list b { font-family: var(--serif); }
+  .rel-list small { display: block; color: var(--sub); }
+  .help { display: grid; gap: 12px; }
+  .help .it { padding: 14px 16px; border-radius: 14px; border: 1px solid color-mix(in srgb, var(--el) 40%, transparent); background: color-mix(in srgb, var(--el) 8%, transparent); }
+  .help .it h3 { color: var(--el); margin-bottom: 4px; }
+  @media (max-width: 620px) {
+    .me-card { grid-template-columns: 84px 1fr; gap: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<main class="wrap narrow">
+  <div id="inputView">
+    <div class="page-head">
+      <div class="eyebrow">四柱 · 사주풀이</div>
+      <h1>내 사주 보기</h1>
+      <p class="lead">생년월일과 태어난 시각을 입력하면 만세력으로 명식을 세워 풀이합니다.</p>
+    </div>
+    <div class="card solid"><div id="formBox"></div></div>
+  </div>
+
+  <div id="resultView" class="hide">
+    <div class="res-head">
+      <div>
+        <div class="eyebrow">四柱八字</div>
+        <h1 id="rTitle"></h1>
+        <div class="muted small" id="rMeta"></div>
+      </div>
+      <div class="btns">
+        <button class="btn sm main" id="saveBtn" type="button">내 사주로 저장</button>
+        <button class="btn sm" id="copyBtn" type="button">링크 복사</button>
+        <button class="btn sm" id="editBtn" type="button">다시 입력</button>
+      </div>
+    </div>
+
+    <nav class="toc" aria-label="풀이 목차">
+      <a class="chip" href="#s-chart">명식</a><a class="chip" href="#s-el">오행</a><a class="chip" href="#s-me">일간</a><a class="chip" href="#s-ten">십신</a>
+      <a class="chip" href="#s-rel">합충·신살</a><a class="chip" href="#s-daeun">대운</a><a class="chip" href="#s-year">세운</a>
+    </nav>
+
+    <div id="rNotes" style="padding-top:20px"></div>
+
+    <section class="sec" id="s-chart">
+      <h2>명식 <small>사주 여덟 글자</small></h2>
+      <div class="card solid"><div class="pillars" id="rChart"></div></div>
+    </section>
+
+    <section class="sec" id="s-el">
+      <h2>오행 분포 <small>기운의 균형</small></h2>
+      <div class="grid g2">
+        <div class="card"><div class="bars" id="rBars"></div><p class="small" id="rYinYang" style="margin-top:16px"></p></div>
+        <div class="card"><div class="label">일간의 힘 (간이 판정)</div><h3 id="rStrength" style="margin:4px 0 14px"></h3><div class="meter"><i id="rMeter"></i></div><div class="meter-label"><span>신약</span><span>중화</span><span>신강</span></div><p class="small" id="rStrengthText" style="margin-top:14px"></p></div>
+      </div>
+      <div class="stack" style="margin-top:14px" id="rElText"></div>
+      <h3 style="margin:26px 0 12px">보완하면 좋은 기운</h3>
+      <div class="help" id="rHelp"></div>
+    </section>
+
+    <section class="sec" id="s-me">
+      <h2>일간 <small>나를 나타내는 글자</small></h2>
+      <div class="card me-card" id="rMe"></div>
+      <a class="card" id="rIlju" style="margin-top:14px"></a>
+    </section>
+
+    <section class="sec" id="s-ten">
+      <h2>십신 <small>관계와 역할의 지도</small></h2>
+      <div class="grid g2">
+        <div class="card"><div class="bars" id="rTenBars"></div></div>
+        <div class="card" id="rTenText"></div>
+      </div>
+      <div class="tbl-wrap" style="margin-top:14px"><table class="tbl" id="rTenTable"></table></div>
+    </section>
+
+    <section class="sec" id="s-rel">
+      <h2>합충과 신살 <small>글자 사이의 작용</small></h2>
+      <div class="grid g2">
+        <div class="card"><h3>합 · 충 · 형</h3><div class="rel-list" id="rRel"></div></div>
+        <div class="card"><h3>신살</h3><div class="rel-list" id="rSinsal"></div></div>
+      </div>
+    </section>
+
+    <section class="sec" id="s-daeun">
+      <h2>대운 <small>10년 단위의 큰 흐름</small></h2>
+      <div class="card"><p id="rDaeunInfo" style="margin-bottom:14px"></p><div class="hscroll" id="rDaeun"></div><div class="note" id="rDaeunNow" style="margin-top:14px"></div></div>
+    </section>
+
+    <section class="sec" id="s-year">
+      <h2>세운 <small>해마다 바뀌는 운</small></h2>
+      <div class="card"><div class="hscroll" id="rYears"></div><div class="note" id="rYearNow" style="margin-top:14px"></div></div>
+    </section>
+
+    <div class="btns" style="margin-top:34px">
+      <a class="btn" id="todayLink" href="today.html">오늘의 운세 보기</a>
+      <a class="btn" href="match.html">궁합 보기</a>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  var S = Saju, D = SajuData, U = SajuSite;
+  function $(id) { return document.getElementById(id); }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function elSpan(i, text) { return '<span class="el-text el-' + i + '">' + text + '</span>'; }
+  function stemHtml(s) { return '<span class="gz-inline el-' + S.stemEl(s) + '">' + S.STEM_H[s] + '</span>'; }
+  function brHtml(b) { return '<span class="gz-inline el-' + S.BR_EL[b] + '">' + S.BR_H[b] + '</span>'; }
+
+  var inputView = $('inputView'), resultView = $('resultView'), current = null;
+  var bf = U.birthForm($('formBox'), {});
+  bf.form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var v = bf.get();
+    if (!v) return;
+    var r = S.calc(v);
+    if (r.error) { bf.showError(r.error); return; }
+    history.pushState(null, '', 'saju.html?' + U.toQuery(v));
+    show(v, r);
+  });
+  $('editBtn').addEventListener('click', function () { resultView.classList.add('hide'); inputView.classList.remove('hide'); window.scrollTo(0, 0); });
+  $('saveBtn').addEventListener('click', function () {
+    if (!current) return;
+    this.textContent = U.saveProfile(current) ? '저장했습니다' : '저장하지 못했습니다';
+  });
+  $('copyBtn').addEventListener('click', function () {
+    var b = this, url = location.href;
+    function done(ok) { b.textContent = ok ? '복사했습니다' : '복사하지 못했습니다'; setTimeout(function () { b.textContent = '링크 복사'; }, 1800); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function () { done(true); }, function () { done(false); });
+    else done(false);
+  });
+  function boot() {
+    var v = U.fromQuery();
+    if (v) {
+      bf.set(v);
+      var r = S.calc(v);
+      if (r.error) { bf.showError(r.error); resultView.classList.add('hide'); inputView.classList.remove('hide'); return; }
+      show(v, r);
+    } else {
+      resultView.classList.add('hide'); inputView.classList.remove('hide');
+      var p = U.getProfile(); if (p) bf.set(p);
+    }
+  }
+  window.addEventListener('popstate', boot);
+  boot();
+
+  function show(v, r) {
+    current = v;
+    inputView.classList.add('hide'); resultView.classList.remove('hide');
+    $('saveBtn').textContent = '내 사주로 저장';
+    var P = r.pillars, day = P[2].s, dayEl = S.stemEl(day);
+
+    // 머리말
+    $('rTitle').textContent = (v.name ? v.name + '님의 사주' : '사주 풀이') + ' · ' + S.gzK(P[2]) + '일주';
+    var meta = '양력 ' + r.solar.y + '.' + pad(r.solar.m) + '.' + pad(r.solar.d) + (r.unknownTime ? ' (시간 모름)' : ' ' + pad(v.h) + ':' + pad(v.mi));
+    if (r.lunar) meta += ' · 음력 ' + r.lunar.y + '.' + (r.lunar.leap ? '윤' : '') + pad(r.lunar.m) + '.' + pad(r.lunar.d);
+    meta += ' · ' + (v.gender === 'M' ? '남' : v.gender === 'F' ? '여' : '') + ' · ' + S.ANIMAL[P[0].b] + '띠';
+    $('rMeta').textContent = meta;
+    document.title = (v.name ? v.name + '님의 사주' : '사주 풀이') + ' · 명리서재';
+
+    // 계산 메모
+    var notes = [];
+    if (r.corrected) notes.push('<b>시간 보정</b> 시계 시각 ' + pad(v.h) + ':' + pad(v.mi) + ' → 출생 지역 태양시 ' + pad(r.localTime.h) + ':' + pad(r.localTime.mi) + ' (' + (r.correctionMin > 0 ? '+' : '') + r.correctionMin + '분)으로 일주와 시주를 정했습니다.');
+    if (r.offsetMin !== 540) notes.push('<b>표준시</b> 출생 당시 한국의 표준시는 지금과 달랐습니다 (UTC+' + Math.floor(r.offsetMin / 60) + ':' + pad(r.offsetMin % 60) + (r.offsetMin === 600 ? ', 서머타임' : '') + '). 이를 반영해 계산했습니다.');
+    if (r.lateJa) notes.push('<b>자시</b> 밤 11시 이후 출생입니다. ' + (v.jasi === 'yaja' ? '야자시 방식으로 일주를 당일로 두었습니다.' : '자시부터 다음 날로 보아 일주를 다음 날 간지로 세웠습니다. 세부 설정에서 야자시 방식으로 바꿀 수 있습니다.'));
+    if (r.unknownTime) notes.push('<b>시간 모름</b> 시주 없이 여섯 글자로 풀이합니다.' + (r.boundaryDay ? ' 태어난 날에 절기가 바뀌어, 출생 시각에 따라 월주가 달라질 수 있습니다.' : ''));
+    else if (r.nearBoundaryMin < 30) {
+      var near = Math.abs(r.utc - r.jeol.prev.utc) < Math.abs(r.jeol.next.utc - r.utc) ? r.jeol.prev : r.jeol.next;
+      notes.push('<b>절입 시각 근접</b> ' + near.name + ' 절입(' + U.fmtKst(near.utc) + ')과 ' + Math.round(r.nearBoundaryMin) + '분 차이입니다. 출생 시각이 조금만 달라도 월주가 바뀔 수 있으니 시각을 다시 확인해 보세요.');
+    }
+    $('rNotes').innerHTML = notes.map(function (n) { return '<div class="note">' + n + '</div>'; }).join('');
+
+    // 명식표 (시 · 일 · 월 · 년 순)
+    var order = [3, 2, 1, 0], sub = ['조상 · 초년', '부모 · 사회', '나 · 배우자', '자식 · 말년'];
+    var sinsalAt = [[], [], [], []];
+    r.sinsal.forEach(function (x) { x.at.forEach(function (i) { sinsalAt[i].push(x.name); }); });
+    var h = '<div></div>' + order.map(function (i) { return '<div class="ch">' + S.PILLAR_NAME[i] + '<small>' + sub[i] + '</small></div>'; }).join('');
+    function rowOf(label, fn) { h += '<div class="rh">' + label + '</div>' + order.map(function (i) { return '<div class="cell">' + (r.cells[i] ? fn(r.cells[i], i) : '<span class="muted">-</span>') + '</div>'; }).join(''); }
+    h += '<div class="rh">십신</div>' + order.map(function (i) { var c = r.cells[i]; return '<div class="cell' + (i === 2 ? ' me' : '') + '">' + (c ? (i === 2 ? '일간(나)' : S.TEN[c.stemTen]) : '-') + '</div>'; }).join('');
+    h += '<div class="rh">천간</div>' + order.map(function (i) { return '<div>' + U.gzTile('s', P[i] ? P[i].s : null) + '</div>'; }).join('');
+    h += '<div class="rh">지지</div>' + order.map(function (i) { return '<div>' + U.gzTile('b', P[i] ? P[i].b : null, P[i] ? S.ANIMAL[P[i].b] : '') + '</div>'; }).join('');
+    rowOf('십신', function (c) { return S.TEN[c.branchTen]; });
+    rowOf('지장간', function (c) { return '<div class="hid">' + c.hidden.map(function (x) { return stemHtml(x.s); }).join('') + '</div>'; });
+    rowOf('12운성', function (c) { return S.STAGE[c.stage]; });
+    rowOf('신살', function (c, i) { return sinsalAt[i].length ? sinsalAt[i].map(function (n) { return '<span class="tag' + (n === '천을귀인' ? ' hot' : '') + '">' + n + '</span>'; }).join('') : '<span class="muted">-</span>'; });
+    $('rChart').innerHTML = h;
+
+    // 오행
+    $('rBars').innerHTML = r.elements.map(function (c, i) {
+      return '<div class="bar-row el-' + i + '"><span><span class="el-dot"></span> ' + D.EL_INFO[i].hanja + ' ' + S.EL[i] + '</span><div class="track"><div class="fill" style="width:' + (c / r.elementTotal * 100) + '%"></div></div><span class="num">' + c + '</span></div>';
+    }).join('');
+    $('rYinYang').textContent = '음양 비율은 양 ' + r.yinYang.yang + ' : 음 ' + r.yinYang.yin + '입니다. ' + (r.yinYang.yang > r.yinYang.yin + 1 ? '밖으로 드러내고 움직이는 성향이 강합니다.' : r.yinYang.yin > r.yinYang.yang + 1 ? '안으로 살피고 다지는 성향이 강합니다.' : '음양이 고르게 섞여 있습니다.');
+    $('rStrength').textContent = r.strength.label;
+    $('rMeter').style.left = Math.max(4, Math.min(96, r.strength.ratio * 100)) + '%';
+    $('rStrengthText').textContent = '일간 ' + S.STEM_K[day] + S.EL[dayEl] + '을(를) 돕는 기운(비겁·인성)이 전체의 약 ' + Math.round(r.strength.ratio * 100) + '%입니다. ' +
+      (r.strength.deukryeong ? '태어난 달의 기운이 일간을 도와 제철을 만났습니다(득령). ' : '태어난 달의 기운은 일간을 직접 돕지 않습니다. ') +
+      (r.strength.strong ? '기운이 넉넉한 편이라 재능을 밖으로 쓰고 덜어 내는 쪽이 균형에 좋습니다.' : '기운이 부족한 편이라 배우고 채우며 도와줄 사람을 곁에 두는 쪽이 균형에 좋습니다.') + ' 월지에 가중치를 둔 간이 계산이며, 실제 감명에서는 조후와 통근을 함께 봅니다.';
+    var elText = [];
+    r.manyEls.forEach(function (i) { elText.push('<div class="note el-' + i + '"><b>' + elSpan(i, S.EL[i] + '(' + D.EL_INFO[i].hanja + ') 기운이 많습니다') + '</b> ' + D.EL_INFO[i].many + '</div>'); });
+    r.lackEls.forEach(function (i) { elText.push('<div class="note el-' + i + '"><b>' + elSpan(i, S.EL[i] + '(' + D.EL_INFO[i].hanja + ') 기운이 없습니다') + '</b> ' + D.EL_INFO[i].lack + '</div>'); });
+    if (!elText.length) elText.push('<div class="note"><b>오행이 고르게 분포합니다</b> 특별히 넘치거나 빠진 기운이 없어 어떤 환경에도 무난하게 적응합니다.</div>');
+    $('rElText').innerHTML = elText.join('');
+    var help = r.helpEls.slice();
+    r.lackEls.forEach(function (i) { if (help.indexOf(i) < 0 && !r.strength.strong && S.mod(i - dayEl, 5) !== 3) help.push(i); });
+    $('rHelp').innerHTML = help.slice(0, 3).map(function (i) {
+      var e = D.EL_INFO[i], tg = D.TENGROUP_INFO[S.mod(i - dayEl, 5)];
+      return '<div class="it el-' + i + '"><h3>' + e.hanja + ' ' + e.name + ' · 나에게는 ' + tg.name + '</h3><dl class="kv"><dt>색</dt><dd>' + e.color + '</dd><dt>방위</dt><dd>' + e.dir + '</dd><dt>숫자</dt><dd>' + e.num + '</dd><dt>실천</dt><dd>' + e.boost + '</dd></dl></div>';
+    }).join('');
+
+    // 일간
+    var si = D.STEM_INFO[day], mb = P[1].b;
+    $('rMe').innerHTML = '<div>' + U.gzTile('s', day) + '</div><div><div class="label">' + S.STEM_K[day] + S.EL[dayEl] + ' (' + (S.stemYang(day) ? '양' : '음') + ') · ' + si.symbol + '</div><h3 style="font-size:1.3rem;margin:4px 0 8px">' + si.title + '</h3>' +
+      '<p>' + si.summary + '</p><p>' + brHtml(mb) + '월, ' + D.BRANCH_INFO[mb].season + '에 태어난 ' + S.STEM_K[day] + S.EL[dayEl] + '입니다. ' + D.BRANCH_INFO[mb].desc + '</p>' +
+      '<dl class="kv" style="margin-top:14px"><dt>강점</dt><dd>' + si.good + '</dd><dt>유의할 점</dt><dd>' + si.care + '</dd><dt>어울리는 일</dt><dd>' + si.work + '</dd><dt>연애와 관계</dt><dd>' + si.love + '</dd></dl></div>';
+    var dIdx = S.ganziIndex(P[2].s, P[2].b), ij = D.ILJU[dIdx];
+    $('rIlju').href = 'ilju.html#' + dIdx;
+    $('rIlju').innerHTML = '<div class="label">일주 풀이</div><h3 style="margin:4px 0 6px">' + U.miniGz(P[2]) + ' ' + S.gzK(P[2]) + '일주 · ' + ij[0] + '</h3><p>' + ij[2] + '</p><p class="small" style="margin-top:10px;color:var(--c1)">일주 사전에서 자세히 보기 →</p>';
+
+    // 십신
+    var tmax = Math.max.apply(null, r.tenGroups), tsum = r.tenGroups.reduce(function (a, b) { return a + b; }, 0);
+    $('rTenBars').innerHTML = r.tenGroups.map(function (c, i) {
+      return '<div class="bar-row el-' + S.mod(dayEl + i, 5) + '"><span>' + D.TENGROUP_INFO[i].name + '</span><div class="track"><div class="fill" style="width:' + (tsum ? c / tsum * 100 : 0) + '%"></div></div><span class="num">' + c + '</span></div>';
+    }).join('');
+    var tt = '';
+    r.tenGroups.forEach(function (c, i) { if (c === tmax && c > 0) tt += '<h3>' + D.TENGROUP_INFO[i].name + '이(가) 두드러집니다</h3><p style="margin-bottom:14px">' + D.TENGROUP_INFO[i].desc + '</p>'; });
+    r.tenGroups.forEach(function (c, i) { if (c === 0) tt += '<p class="small"><b style="color:var(--ink)">' + D.TENGROUP_INFO[i].name + ' 없음</b> · ' + D.TENGROUP_INFO[i].none + '</p>'; });
+    $('rTenText').innerHTML = tt;
+    var rows = '<tr><th>자리</th><th>글자</th><th>십신</th><th>뜻</th></tr>';
+    [0, 1, 2, 3].forEach(function (i) {
+      var c = r.cells[i]; if (!c) return;
+      if (i !== 2) { var a = D.TEN_INFO[c.stemTen]; rows += '<tr><td style="white-space:nowrap">' + S.PILLAR_NAME[i].charAt(0) + '간</td><td class="h">' + stemHtml(c.s) + '</td><td><b>' + S.TEN[c.stemTen] + '</b><br><span class="muted small">' + a.key + '</span></td><td>' + a.desc + '</td></tr>'; }
+      var b = D.TEN_INFO[c.branchTen]; rows += '<tr><td style="white-space:nowrap">' + S.PILLAR_NAME[i].charAt(0) + '지</td><td class="h">' + brHtml(c.b) + '</td><td><b>' + S.TEN[c.branchTen] + '</b><br><span class="muted small">' + b.key + '</span></td><td>' + b.desc + '</td></tr>';
+    });
+    $('rTenTable').innerHTML = rows;
+
+    // 합충 · 신살
+    $('rRel').innerHTML = r.relations.length ? r.relations.map(function (x) {
+      var where = x.a !== undefined ? S.PILLAR_NAME[x.a] + ' · ' + S.PILLAR_NAME[x.b] : '지지 전체';
+      return '<div><div><b>' + x.text + '</b>' + (x.el !== null && x.el !== undefined ? ' <span class="tag el-text el-' + x.el + '">' + S.EL[x.el] + '</span>' : '') + '<small>' + where + '</small></div><div class="muted">' + (D.REL_INFO[x.kind] || '') + '</div></div>';
+    }).join('') : '<p>글자 사이에 뚜렷한 합이나 충이 없습니다. 기복이 적고 무난한 구성입니다.</p>';
+    var ssHtml = r.sinsal.map(function (x) {
+      return '<div><div><b>' + x.name + '</b><small>' + x.at.map(function (i) { return S.PILLAR_NAME[i]; }).join(' · ') + '</small></div><div class="muted">' + (D.SINSAL_INFO[x.name] || '') + '</div></div>';
+    }).join('');
+    ssHtml += '<div><div><b>공망 지지</b><small>일주 기준</small></div><div class="muted">' + brHtml(r.gongmang[0]) + ' ' + brHtml(r.gongmang[1]) + ' (' + S.BR_K[r.gongmang[0]] + '·' + S.BR_K[r.gongmang[1]] + ')</div></div>';
+    $('rSinsal').innerHTML = ssHtml;
+
+    // 대운
+    var thisYear = S.todaySeoul().y, age = thisYear - r.solar.y;
+    if (r.daeun) {
+      $('rDaeunNow').classList.remove('hide');
+      var dn = r.daeun, yrs = Math.floor(dn.exactYears), mons = Math.round((dn.exactYears - yrs) * 12);
+      $('rDaeunInfo').innerHTML = '<b style="color:var(--ink)">' + (dn.forward ? '순행' : '역행') + ' · 대운수 ' + dn.num + '</b> — ' + (dn.forward ? '다음' : '이전') + ' 절입까지 약 ' + dn.days.toFixed(1) + '일로, 3일을 1년으로 환산하면 ' + yrs + '년 ' + mons + '개월입니다. 만 ' + dn.num + '세 무렵부터 10년마다 대운이 바뀝니다.';
+      var nowD = null;
+      $('rDaeun').innerHTML = dn.list.map(function (d) {
+        var on = age >= d.age && age < d.age + 10; if (on) nowD = d;
+        return '<div class="luck' + (on ? ' now' : '') + '"><div class="age">' + d.age + '세</div><div>' + d.year + '년</div>' + U.miniGz(d) + '<div>' + S.TEN[d.stemTen] + '</div><div>' + S.TEN[d.branchTen] + '</div><div>' + S.STAGE[d.stage] + '</div></div>';
+      }).join('');
+      $('rDaeunNow').innerHTML = nowD
+        ? '<b>지금은 ' + S.gzK(nowD) + '(' + S.gzH(nowD) + ') 대운</b> (' + nowD.age + '~' + (nowD.age + 9) + '세). 천간은 ' + S.TEN[nowD.stemTen] + '(' + D.TEN_INFO[nowD.stemTen].key + '), 지지는 ' + S.TEN[nowD.branchTen] + '(' + D.TEN_INFO[nowD.branchTen].key + ')의 기운입니다. ' + D.TEN_INFO[nowD.stemTen].desc + ' 12운성은 ' + S.STAGE[nowD.stage] + ' — ' + D.STAGE_INFO[nowD.stage].desc
+        : (age < dn.num ? '<b>아직 첫 대운이 시작되기 전입니다.</b> 이 시기에는 월주의 영향을 크게 받습니다.' : '<b>표시된 대운 범위를 지났습니다.</b>');
+    } else {
+      $('rDaeunInfo').textContent = '성별을 입력하면 대운을 볼 수 있습니다.'; $('rDaeun').innerHTML = ''; $('rDaeunNow').classList.add('hide');
+    }
+
+    // 세운
+    var yh = '', nowY = null;
+    for (var y = thisYear - 2; y <= thisYear + 7; y++) {
+      var yl = S.yearLuck(day, y); if (y === thisYear) nowY = yl;
+      yh += '<div class="luck' + (y === thisYear ? ' now' : '') + '"><div class="age">' + y + '</div><div>' + (y - r.solar.y) + '세</div>' + U.miniGz(yl) + '<div>' + S.TEN[yl.stemTen] + '</div><div>' + S.TEN[yl.branchTen] + '</div><div>' + S.STAGE[yl.stage] + '</div></div>';
+    }
+    $('rYears').innerHTML = yh;
+    var yrel = S.branchRel(nowY.b, P[2].b).filter(function (n) { return n !== '같은 지지'; });
+    $('rYearNow').innerHTML = '<b>' + thisYear + '년 ' + S.gzK(nowY) + '(' + S.gzH(nowY) + ')년</b> — 천간 ' + S.TEN[nowY.stemTen] + '의 해입니다. ' + D.TEN_INFO[nowY.stemTen].desc + ' 올해의 열쇠말은 ' + D.TEN_INFO[nowY.stemTen].key + '. ' +
+      (yrel.length ? '올해의 지지가 일지와 ' + yrel.join('·') + ' 관계입니다. ' + (D.REL_INFO[yrel[0]] || '') : '') + ' 사주의 한 해는 입춘에 시작합니다.';
+
+    $('todayLink').href = 'today.html?' + U.toQuery(v);
+    window.scrollTo(0, 0);
+  }
+})();
+</script>
+</body>
+</html>

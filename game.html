@@ -4,65 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark light">
-<title>게임 · 테스트 웹사이트</title>
+<title>쉬어가기 · 명리서재</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/site.js"></script>
 <style>
-  :root {
-    --bg: #0b0c0f; --bg2: #16181d; --ink: #f3f4f6; --sub: #8d939e; --line: rgba(255,255,255,.1);
-    --glass: rgba(255,255,255,.04); --glass2: rgba(255,255,255,.08);
-    --c1: #8496ff;
-    --shadow: 0 16px 44px rgba(0,0,0,.4);
-  }
-  :root[data-theme="light"] {
-    --bg: #f7f7f8; --bg2: #ffffff; --ink: #111317; --sub: #666c78; --line: rgba(17,19,23,.1);
-    --glass: rgba(255,255,255,.75); --glass2: rgba(255,255,255,.95);
-    --c1: #4a63f0;
-    --shadow: 0 14px 36px rgba(20,25,40,.08);
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.65; overflow-x: hidden; word-break: keep-all; overflow-wrap: anywhere;
-    font-family: "Pretendard", "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-  a { color: inherit; text-decoration: none; }
-  button { font: inherit; color: inherit; }
-  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 22px; }
-
-  .aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
-  .aurora i { position: absolute; top: -24%; left: 50%; width: 60vw; height: 46vw; min-width: 380px; min-height: 380px; border-radius: 50%;
-    transform: translateX(-50%); filter: blur(110px); opacity: .13; background: var(--c1); }
-
-  header { position: sticky; top: 14px; z-index: 20; padding: 0 14px; }
-  .bar { max-width: 1040px; margin: 0 auto; height: 58px; padding: 0 10px 0 20px; display: flex; align-items: center; justify-content: space-between;
-    background: var(--glass); border: 1px solid var(--line); border-radius: 999px;
-    backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%); box-shadow: var(--shadow); }
-  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
-  .logo span { width: 22px; height: 22px; border-radius: 7px; background: var(--ink); }
-  .tools { display: flex; align-items: center; gap: 6px; }
-  .menu { position: relative; display: flex; }
-  #menuBtn { height: 38px; padding: 0 16px 0 12px; border-radius: 999px; border: 0; background: var(--ink); color: var(--bg); font: inherit; font-size: .88rem; font-weight: 700;
-    cursor: pointer; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; transition: transform .15s; }
-  #menuBtn:hover { transform: translateY(-2px); }
-  #menuBtn:active { transform: scale(.94); }
-  #menuBtn i { font-style: normal; font-size: 1.15rem; line-height: 1; transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
-  header.open #menuBtn i { transform: rotate(135deg); }
-  nav { position: absolute; top: calc(100% + 18px); right: 0; min-width: 230px; padding: 8px; display: flex; flex-direction: column; gap: 2px;
-    background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow);
-    opacity: 0; visibility: hidden; transform: translateY(-10px) scale(.92); transform-origin: top right;
-    transition: transform .18s ease, opacity .15s, visibility 0s .18s; }
-  header.open nav { opacity: 1; visibility: visible; transform: none; transition: transform .4s cubic-bezier(.34,1.56,.64,1), opacity .15s; }
-  nav a { display: flex; align-items: baseline; gap: 14px; padding: 10px 14px; border-radius: 12px; white-space: nowrap;
-    opacity: 0; transform: translateY(-6px); transition: background .15s, opacity .2s, transform .2s; }
-  nav a .n { flex: none; color: var(--sub); font-size: .72rem; font-weight: 600; font-variant-numeric: tabular-nums; opacity: .7; }
-  nav a .t { flex: 1; display: flex; flex-direction: column; line-height: 1.35; }
-  nav a b { font-size: .95rem; font-weight: 600; letter-spacing: -0.01em; }
-  nav a small { font-size: .76rem; color: var(--sub); }
-  nav a::after { content: ""; align-self: center; width: 6px; height: 6px; border-radius: 50%; background: var(--c1); opacity: 0; }
-  header.open nav a { opacity: 1; transform: none;
-    transition: background .15s, opacity .3s calc(60ms + var(--i, 0) * 40ms), transform .3s calc(60ms + var(--i, 0) * 40ms); }
-  header.open nav a:hover { background: var(--line); }
-  nav a.on::after { opacity: 1; }
-  #theme { display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 6px; padding: 12px 14px 8px; border: 0; border-top: 1px solid var(--line); background: none; color: var(--sub);
-    font: inherit; font-size: .84rem; font-weight: 600; text-align: left; cursor: pointer; transition: color .15s; }
-  #theme:hover { color: var(--ink); }
-  #theme i { font-style: normal; font-size: .95rem; line-height: 1; }
+  .wrap { max-width: 1280px; }
 
   .head { padding: 70px 0 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .eyebrow { font-size: .8rem; font-weight: 800; letter-spacing: .16em; color: var(--c1); }
@@ -78,12 +27,7 @@
   .stage iframe { display: block; width: 100%; height: calc(100vh - 150px); min-height: 600px; border: 0; }
   .tip { color: var(--sub); font-size: .86rem; margin: 14px 4px 0; }
 
-  footer { padding: 56px 0 40px; text-align: center; color: var(--sub); font-size: .88rem; }
-
   @media (max-width: 620px) {
-    .bar { padding-left: 14px; height: 54px; }
-    .logo em { display: none; }
-    #menuBtn { height: 34px; }
     .head { padding-top: 48px; }
     .stage { border-radius: 16px; }
     .wrap { padding: 0 12px; }
@@ -92,27 +36,6 @@
 </style>
 </head>
 <body>
-
-<div class="aurora"><i></i></div>
-
-<header>
-  <div class="bar">
-    <a class="logo" href="./"><span></span><em style="font-style:normal">테스트 웹사이트</em></a>
-    <div class="tools">
-      <div class="menu">
-        <button id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><i>+</i>메뉴</button>
-        <nav id="menu">
-          <a href="./#about"><span class="n">01</span><span class="t"><b>소개</b><small>이 사이트는 어떤 곳인지</small></span></a>
-          <a href="./#work"><span class="n">02</span><span class="t"><b>하는 일</b><small>주로 다루는 것들</small></span></a>
-          <a href="./#list"><span class="n">03</span><span class="t"><b>목록</b><small>만든 것과 정리한 글</small></span></a>
-          <a href="board.html"><span class="n">04</span><span class="t"><b>게시판</b><small>자유롭게 글 남기기</small></span></a>
-          <a href="game.html" class="on"><span class="n">05</span><span class="t"><b>게임</b><small>룬 가디언즈 TD</small></span></a>
-          <button id="theme" type="button" aria-label="밝기 전환"><i>◐</i>밝기 전환</button>
-        </nav>
-      </div>
-    </div>
-  </div>
-</header>
 
 <main class="wrap">
   <div class="head">
@@ -133,28 +56,9 @@
   <p class="tip">PC에서 단축키가 먹지 않으면 게임 화면을 한 번 클릭하세요. 휴대폰에서는 '새 창에서 열기'로 열면 화면을 넓게 쓸 수 있습니다.</p>
 </main>
 
-<footer>테스트 웹사이트 · 2026</footer>
-
 <script>
 (function () {
   var root = document.documentElement, game = document.getElementById('game');
-
-  var saved = null;
-  try { saved = localStorage.getItem('theme'); } catch (e) {}
-  if (saved === 'light' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)) root.setAttribute('data-theme', 'light');
-  document.getElementById('theme').addEventListener('click', function () {
-    var light = root.getAttribute('data-theme') === 'light';
-    if (light) root.removeAttribute('data-theme'); else root.setAttribute('data-theme', 'light');
-    try { localStorage.setItem('theme', light ? 'dark' : 'light'); } catch (e) {}
-  });
-
-  // 메뉴 펼침
-  var header = document.querySelector('header'), menuBtn = document.getElementById('menuBtn');
-  document.querySelectorAll('#menu a').forEach(function (a, i) { a.style.setProperty('--i', i); });
-  function setMenu(open) { header.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
-  menuBtn.addEventListener('click', function (ev) { ev.stopPropagation(); setMenu(!header.classList.contains('open')); });
-  document.addEventListener('click', function (ev) { if (ev.target.closest && ev.target.closest('#theme')) return; setMenu(false); });
-  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') setMenu(false); });
 
   // 전체 화면
   document.getElementById('full').addEventListener('click', function () {

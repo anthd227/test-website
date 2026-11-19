@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>명리 기초 · 명리서재</title>
+<meta name="description" content="음양오행, 천간과 지지, 십신, 12운성, 합과 충, 신살, 대운, 24절기, 용어 사전을 정리했습니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/saju-core.js"></script>
+<script src="assets/saju-data.js"></script>
+<script src="assets/site.js"></script>
+<style>
+  .sec { padding-top: 46px; }
+  .sec > p { color: var(--sub); max-width: 720px; }
+  .cycle { display: grid; grid-template-columns: 300px 1fr; gap: 26px; align-items: center; }
+  .cycle svg { width: 100%; height: auto; }
+  .cycle text { font-family: var(--serif); font-weight: 900; }
+  .four-ex { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center; max-width: 420px; }
+  .four-ex > div { display: grid; gap: 6px; }
+  .gloss { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 28px; }
+  .gloss div { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .gloss b { display: block; font-family: var(--serif); margin-bottom: 2px; }
+  .gloss span { color: var(--sub); font-size: .92rem; }
+  table.tbl { min-width: 880px; }
+  .tbl td { min-width: 72px; }
+  .tbl td:last-child { min-width: 240px; }
+  .yy-switch { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  @media (max-width: 760px) { .cycle { grid-template-columns: 1fr; } .cycle svg { max-width: 300px; margin: 0 auto; display: block; } .gloss { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="page-head">
+    <div class="eyebrow">命理 · 명리 기초</div>
+    <h1>처음 읽는 사주 명리</h1>
+    <p class="lead">사주풀이에 나오는 말들을 순서대로 정리했습니다. 위에서부터 읽어도 좋고, 궁금한 항목만 골라 봐도 됩니다.</p>
+  </div>
+
+  <nav class="toc" aria-label="목차">
+    <a class="chip" href="#g-intro">사주란</a><a class="chip" href="#g-el">음양오행</a><a class="chip" href="#g-stem">천간</a><a class="chip" href="#g-branch">지지</a>
+    <a class="chip" href="#g-ten">십신</a><a class="chip" href="#g-stage">12운성</a><a class="chip" href="#g-rel">합·충·형</a><a class="chip" href="#g-sinsal">신살</a>
+    <a class="chip" href="#g-luck">대운·세운</a><a class="chip" href="#g-term">24절기</a><a class="chip" href="#g-gloss">용어 사전</a>
+  </nav>
+
+  <section class="sec" id="g-intro">
+    <h2>사주란 무엇인가</h2>
+    <p>사주(四柱)는 태어난 해, 달, 날, 시를 네 개의 기둥으로 세운 것입니다. 기둥마다 위에는 천간, 아래에는 지지가 한 글자씩 놓여 모두 여덟 글자가 되므로 팔자(八字)라고 부릅니다.</p>
+    <div class="card" style="margin-top:16px">
+      <div class="four-ex" id="fourEx"></div>
+      <dl class="kv" style="margin-top:18px">
+        <dt>년주</dt><dd>조상과 초년, 내가 속한 큰 배경</dd>
+        <dt>월주</dt><dd>부모와 형제, 사회생활과 직업. 계절을 나타내는 월지는 사주에서 힘이 가장 큽니다.</dd>
+        <dt>일주</dt><dd>일간은 나 자신, 일지는 배우자와 가정</dd>
+        <dt>시주</dt><dd>자식과 말년, 내가 이루려는 것</dd>
+      </dl>
+    </div>
+    <div class="note" style="margin-top:14px"><b>달과 해는 절기로 바뀝니다.</b> 사주의 한 해는 설날이 아니라 입춘에 시작하고, 달도 음력 초하루가 아니라 입춘·경칩·청명 같은 절기가 드는 시각에 바뀝니다. 이 사이트는 절입 시각을 분 단위로 계산해 반영합니다.</div>
+  </section>
+
+  <section class="sec" id="g-el">
+    <h2>음양오행</h2>
+    <p>세상의 모든 기운을 음과 양, 그리고 목·화·토·금·수 다섯 가지로 나누어 봅니다. 오행은 서로 낳아 주기도 하고(상생) 눌러 주기도 합니다(상극).</p>
+    <div class="card cycle" style="margin-top:16px">
+      <div id="cycleSvg"></div>
+      <div>
+        <h3>상생 — 바깥 원을 따라</h3>
+        <p style="margin:0 0 14px" class="muted">나무는 불을 살리고(목생화), 불은 재가 되어 흙을 만들고(화생토), 흙 속에서 쇠가 나고(토생금), 쇠는 물을 맺고(금생수), 물은 나무를 기릅니다(수생목).</p>
+        <h3>상극 — 별 모양을 따라</h3>
+        <p style="margin:0" class="muted">나무는 흙을 뚫고(목극토), 흙은 물을 막고(토극수), 물은 불을 끄고(수극화), 불은 쇠를 녹이고(화극금), 쇠는 나무를 벱니다(금극목).</p>
+      </div>
+    </div>
+    <div class="tbl-wrap" style="margin-top:14px"><table class="tbl" id="elTable"></table></div>
+  </section>
+
+  <section class="sec" id="g-stem">
+    <h2>천간 열 글자</h2>
+    <p>하늘의 기운을 나타내는 열 글자입니다. 오행마다 양과 음이 하나씩 있습니다. 태어난 날의 천간이 일간이며, 사주에서 나 자신을 뜻합니다.</p>
+    <div class="tbl-wrap" style="margin-top:16px"><table class="tbl" id="stemTable"></table></div>
+  </section>
+
+  <section class="sec" id="g-branch">
+    <h2>지지 열두 글자</h2>
+    <p>땅의 기운을 나타내는 열두 글자로, 열두 띠와 열두 달, 하루의 열두 시진에 대응합니다. 시각은 한국 시계 기준(태양시 보정 포함)입니다.</p>
+    <div class="tbl-wrap" style="margin-top:16px"><table class="tbl" id="branchTable"></table></div>
+  </section>
+
+  <section class="sec" id="g-ten">
+    <h2>십신</h2>
+    <p>일간(나)과 다른 글자의 관계를 열 가지로 나눈 것입니다. 오행의 생극 관계와 음양이 같은지 다른지로 정해집니다. 일간을 골라 보면 어떤 글자가 어떤 십신이 되는지 볼 수 있습니다.</p>
+    <div class="card" style="margin-top:16px">
+      <div class="yy-switch"><span class="label">일간 선택</span><div class="chips" id="tenPick"></div></div>
+      <div class="chips" id="tenMap"></div>
+    </div>
+    <div class="tbl-wrap" style="margin-top:14px"><table class="tbl" id="tenTable"></table></div>
+  </section>
+
+  <section class="sec" id="g-stage">
+    <h2>12운성</h2>
+    <p>천간의 기운이 지지를 만났을 때의 세기를 사람의 일생에 빗대어 열두 단계로 나타낸 것입니다. 좋고 나쁨이 아니라 기운이 쓰이는 방식의 차이로 봅니다.</p>
+    <div class="grid g4" style="margin-top:16px" id="stageGrid"></div>
+  </section>
+
+  <section class="sec" id="g-rel">
+    <h2>합 · 충 · 형</h2>
+    <p>글자끼리 만나면 묶이기도 하고 부딪치기도 합니다. 사주 안에서, 그리고 대운이나 세운의 글자와 사이에서 일어나는 작용을 봅니다.</p>
+    <div class="tbl-wrap" style="margin-top:16px"><table class="tbl" id="relTable"></table></div>
+  </section>
+
+  <section class="sec" id="g-sinsal">
+    <h2>신살</h2>
+    <p>특정한 글자 조합에 붙인 별 이름입니다. 사주의 큰 틀을 본 뒤에 곁들여 참고합니다. 이 사이트에서는 널리 쓰이는 것만 표시합니다.</p>
+    <div class="grid g2" style="margin-top:16px" id="sinsalGrid"></div>
+  </section>
+
+  <section class="sec" id="g-luck">
+    <h2>대운과 세운</h2>
+    <p>타고난 여덟 글자가 그릇이라면 운은 그 그릇이 지나가는 계절입니다.</p>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card"><h3>대운 — 10년의 계절</h3><p>월주에서 출발해 10년마다 한 간지씩 바뀝니다. 태어난 해의 천간이 양이고 남자이거나, 음이고 여자이면 순행하고 그 반대는 역행합니다.</p><p>대운이 시작되는 나이(대운수)는 태어난 때부터 다음 절입(순행) 또는 이전 절입(역행)까지의 날수를 3으로 나누어 구합니다. 3일이 1년에 해당합니다.</p></div>
+      <div class="card"><h3>세운 — 그해의 날씨</h3><p>해마다 바뀌는 간지입니다. 그해의 천간과 지지가 내 일간에게 어떤 십신이 되는지, 사주의 글자와 합이나 충을 이루는지를 봅니다.</p><p>대운이 큰 방향이라면 세운은 그해에 실제로 드러나는 사건의 성격에 가깝습니다.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" id="g-term">
+    <h2><span id="termYear"></span>년 24절기</h2>
+    <p>태양의 위치(황경)가 15도씩 움직일 때마다 절기가 바뀝니다. 굵게 표시한 열두 절기(절)가 사주의 달을 바꾸는 기준입니다. 시각은 태양 황경을 직접 계산한 값으로, 천문 기관 발표와 1~2분 차이가 날 수 있습니다.</p>
+    <div class="tbl-wrap" style="margin-top:16px"><table class="tbl" id="termTable"></table></div>
+  </section>
+
+  <section class="sec" id="g-gloss">
+    <h2>용어 사전</h2>
+    <input type="search" id="glossQ" placeholder="용어 찾기" aria-label="용어 찾기" style="max-width:320px;margin:8px 0 6px">
+    <div class="gloss" id="gloss"></div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var S = Saju, D = SajuData, U = SajuSite;
+  function $(id) { return document.getElementById(id); }
+  function stemHtml(s) { return '<span class="gz-inline el-' + S.stemEl(s) + '">' + S.STEM_H[s] + '</span>'; }
+  function brHtml(b) { return '<span class="gz-inline el-' + S.BR_EL[b] + '">' + S.BR_H[b] + '</span>'; }
+
+  // 오늘 날짜의 명식 예시
+  var t = S.todaySeoul(), now = S.calc({ y: t.y, m: t.m, d: t.d, h: t.h, mi: t.mi, calendar: 'solar', correction: 'none' });
+  $('fourEx').innerHTML = [3, 2, 1, 0].map(function (i) { var p = now.pillars[i]; return '<div><span class="label">' + S.PILLAR_NAME[i] + '</span>' + U.gzTile('s', p.s) + U.gzTile('b', p.b) + '</div>'; }).join('');
+
+  // 상생상극 그림
+  (function () {
+    var cx = 150, cy = 150, R = 105, pts = [], i, h = '';
+    for (i = 0; i < 5; i++) { var a = (-90 + i * 72) * Math.PI / 180; pts.push([cx + R * Math.cos(a), cy + R * Math.sin(a)]); }
+    function seg(a, b, pad) { var dx = b[0] - a[0], dy = b[1] - a[1], l = Math.sqrt(dx * dx + dy * dy); return [a[0] + dx / l * pad, a[1] + dy / l * pad, b[0] - dx / l * pad, b[1] - dy / l * pad]; }
+    h += '<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>';
+    for (i = 0; i < 5; i++) { var s1 = seg(pts[i], pts[(i + 1) % 5], 34); h += '<line x1="' + s1[0] + '" y1="' + s1[1] + '" x2="' + s1[2] + '" y2="' + s1[3] + '" stroke="var(--ink)" stroke-width="2" marker-end="url(#ah)"/>'; }
+    for (i = 0; i < 5; i++) { var s2 = seg(pts[i], pts[(i + 2) % 5], 34); h += '<line x1="' + s2[0] + '" y1="' + s2[1] + '" x2="' + s2[2] + '" y2="' + s2[3] + '" stroke="var(--sub)" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#ah)"/>'; }
+    var col = ['--wood', '--fire', '--earth', '--metal', '--water'];
+    for (i = 0; i < 5; i++) h += '<circle cx="' + pts[i][0] + '" cy="' + pts[i][1] + '" r="27" fill="var(--bg2)" stroke="var(' + col[i] + ')" stroke-width="2.5"/><text x="' + pts[i][0] + '" y="' + (pts[i][1] + 9) + '" text-anchor="middle" font-size="25" fill="var(' + col[i] + ')">' + S.EL_H[i] + '</text>';
+    $('cycleSvg').innerHTML = '<svg viewBox="0 0 300 300" role="img" aria-label="오행의 상생과 상극. 실선은 상생, 점선은 상극">' + h + '</svg>';
+  })();
+
+  $('elTable').innerHTML = '<tr><th>오행</th><th>계절</th><th>방위</th><th>색</th><th>숫자</th><th>덕목</th><th>장부</th><th>성질</th></tr>' + D.EL_INFO.map(function (e, i) {
+    return '<tr><td class="h"><span class="el-text el-' + i + '">' + e.hanja + '</span> ' + e.name + '</td><td>' + e.season + '</td><td>' + e.dir + '</td><td>' + e.color + '</td><td>' + e.num + '</td><td>' + e.virtue + '</td><td>' + e.organ + '</td><td>' + e.nature + '</td></tr>';
+  }).join('');
+
+  $('stemTable').innerHTML = '<tr><th>천간</th><th>오행 · 음양</th><th>물상</th><th>성향</th><th>강점</th></tr>' + D.STEM_INFO.map(function (x, i) {
+    return '<tr><td class="h">' + stemHtml(i) + ' ' + S.STEM_K[i] + '</td><td>' + S.EL[S.stemEl(i)] + ' · ' + (S.stemYang(i) ? '양' : '음') + '</td><td>' + x.symbol + '</td><td>' + x.summary + '</td><td>' + x.good + '</td></tr>';
+  }).join('');
+
+  $('branchTable').innerHTML = '<tr><th>지지</th><th>띠</th><th>오행</th><th>달</th><th>시각</th><th>지장간</th><th>뜻</th></tr>' + D.BRANCH_INFO.map(function (x, i) {
+    return '<tr><td class="h">' + brHtml(i) + ' ' + S.BR_K[i] + '</td><td>' + S.ANIMAL[i] + '</td><td>' + S.EL[S.BR_EL[i]] + '</td><td>' + x.month + '<br><span class="muted small">' + x.season + '</span></td><td style="white-space:nowrap">' + x.time + '</td><td style="white-space:nowrap">' + S.HIDDEN[i].map(stemHtml).join(' ') + '</td><td>' + x.desc + '</td></tr>';
+  }).join('');
+
+  // 십신
+  var pick = 0;
+  function drawTen() {
+    $('tenPick').innerHTML = S.STEM_H.map(function (h, i) { return '<button type="button" class="chip' + (i === pick ? ' on' : '') + '" data-s="' + i + '">' + h + ' ' + S.STEM_K[i] + '</button>'; }).join('');
+    $('tenMap').innerHTML = S.STEM_H.map(function (h, i) { return '<span class="chip">' + stemHtml(i) + ' ' + S.TEN[S.tenGod(pick, i)] + '</span>'; }).join('');
+  }
+  $('tenPick').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (!b) return; pick = +b.getAttribute('data-s'); drawTen(); });
+  drawTen();
+  $('tenTable').innerHTML = '<tr><th>십신</th><th>관계</th><th>열쇠말</th><th>사람</th><th>뜻</th><th>많을 때</th></tr>' + D.TEN_INFO.map(function (x, i) {
+    return '<tr><td class="h">' + S.TEN[i] + '<br><span class="muted small" style="font-weight:500">' + x.hanja + ' · ' + D.TENGROUP_INFO[x.group].name + '</span></td><td>' + x.mean + '</td><td>' + x.key + '</td><td>' + x.people + '</td><td>' + x.desc + '</td><td>' + x.many + '</td></tr>';
+  }).join('');
+
+  $('stageGrid').innerHTML = D.STAGE_INFO.map(function (x, i) { return '<div class="card"><div class="label">' + (i + 1) + ' · ' + x.h + '</div><h3 style="margin-top:2px">' + S.STAGE[i] + '</h3><p class="small">' + x.desc + '</p></div>'; }).join('');
+
+  var REL = [
+    ['천간합', '甲己(토) · 乙庚(금) · 丙辛(수) · 丁壬(목) · 戊癸(화)'],
+    ['천간충', '甲庚 · 乙辛 · 丙壬 · 丁癸'],
+    ['육합', '子丑 · 寅亥 · 卯戌 · 辰酉 · 巳申 · 午未'],
+    ['삼합', '申子辰(수) · 亥卯未(목) · 寅午戌(화) · 巳酉丑(금)'],
+    ['방합', '寅卯辰(목) · 巳午未(화) · 申酉戌(금) · 亥子丑(수)'],
+    ['충', '子午 · 丑未 · 寅申 · 卯酉 · 辰戌 · 巳亥'],
+    ['형', '寅巳申 · 丑戌未 · 子卯 · 辰辰 午午 酉酉 亥亥(자형)'],
+    ['파', '子酉 · 丑辰 · 寅亥 · 卯午 · 巳申 · 未戌'],
+    ['해', '子未 · 丑午 · 寅巳 · 卯辰 · 申亥 · 酉戌'],
+    ['원진', '子未 · 丑午 · 寅酉 · 卯申 · 辰亥 · 巳戌']
+  ];
+  $('relTable').innerHTML = '<tr><th>이름</th><th>짝</th><th>작용</th></tr>' + REL.map(function (x) { return '<tr><td class="h">' + x[0] + '</td><td style="font-family:var(--serif);font-weight:700">' + x[1] + '</td><td>' + D.REL_INFO[x[0]] + '</td></tr>'; }).join('');
+
+  $('sinsalGrid').innerHTML = Object.keys(D.SINSAL_INFO).map(function (k) { return '<div class="card"><h3>' + k + '</h3><p>' + D.SINSAL_INFO[k] + '</p></div>'; }).join('');
+
+  // 24절기
+  $('termYear').textContent = t.y;
+  var nowUtc = Date.now(), nextMarked = false;
+  $('termTable').innerHTML = '<tr><th>절기</th><th>황경</th><th>드는 때 (한국 시각)</th><th>사주의 달</th></tr>' + S.termsOfYear(t.y).map(function (x) {
+    var jeol = x.k % 2 === 0, mb = (x.k / 2 + 1) % 12, up = !nextMarked && x.utc > nowUtc; if (up) nextMarked = true;
+    return '<tr' + (up ? ' style="background:var(--glass2)"' : '') + '><td class="h" style="' + (jeol ? '' : 'font-weight:500;font-size:1rem') + '">' + x.name + (up ? ' <span class="tag hot">다음 절기</span>' : '') + '</td><td>' + ((285 + 15 * x.k) % 360) + '°</td><td>' + U.fmtKst(x.utc) + '</td><td>' + (jeol ? brHtml(mb) + ' ' + S.BR_K[mb] + '월 시작' : '<span class="muted">-</span>') + '</td></tr>';
+  }).join('');
+
+  // 용어
+  function drawGloss() {
+    var q = $('glossQ').value.trim();
+    $('gloss').innerHTML = D.GLOSSARY.filter(function (x) { return !q || (x[0] + x[1]).indexOf(q) >= 0; }).map(function (x) { return '<div><b>' + x[0] + '</b><span>' + x[1] + '</span></div>'; }).join('') || '<p class="muted">찾는 용어가 없습니다.</p>';
+  }
+  $('glossQ').addEventListener('input', drawGloss); drawGloss();
+})();
+</script>
+</body>
+</html>

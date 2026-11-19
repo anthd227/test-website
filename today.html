@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>오늘의 운세 · 명리서재</title>
+<meta name="description" content="오늘의 일진이 내 일간에 어떤 기운으로 들어오는지, 한 주의 흐름과 함께 봅니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/saju-core.js"></script>
+<script src="assets/saju-data.js"></script>
+<script src="assets/site.js"></script>
+<style>
+  .day-card { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; }
+  .day-card .two { display: grid; grid-template-columns: 84px 84px; gap: 10px; }
+  .top { display: grid; grid-template-columns: auto 1fr; gap: 26px; align-items: center; }
+  .top h2 { margin-bottom: 8px; }
+  .who { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .week button { padding: 10px 4px; border-radius: 14px; border: 1px solid var(--line); background: var(--glass); cursor: pointer; text-align: center; font-size: .76rem; color: var(--sub); display: grid; gap: 4px; justify-items: center; }
+  .week button.on { border-color: var(--c1); background: color-mix(in srgb, var(--c1) 10%, var(--bg2)); }
+  .week button b { color: var(--ink); font-size: .86rem; }
+  .week .sc { font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .week .pip { width: 100%; height: 4px; border-radius: 4px; background: var(--glass2); overflow: hidden; }
+  .week .pip i { display: block; height: 100%; background: var(--c1); }
+  .cat h3 { display: flex; align-items: center; gap: 8px; }
+  .cat h3 span { font-family: var(--serif); color: var(--c1); font-weight: 900; }
+  @media (max-width: 620px) {
+    .top, .day-card { grid-template-columns: 1fr; justify-items: start; }
+    .week { grid-template-columns: repeat(7, minmax(62px, 1fr)); overflow-x: auto; padding-bottom: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<main class="wrap narrow">
+  <div class="page-head">
+    <div class="eyebrow">日辰 · 오늘의 운세</div>
+    <h1>오늘의 운세</h1>
+    <p class="lead">오늘의 간지(일진)가 내 일간에게 어떤 십신으로 들어오는지를 기준으로 하루의 흐름을 읽습니다.</p>
+  </div>
+
+  <div class="card day-card">
+    <div class="two" id="dayGz"></div>
+    <div><div class="label" id="dayDate"></div><h3 id="dayTitle" style="font-size:1.3rem;margin:4px 0 6px"></h3><p id="dayDesc"></p></div>
+  </div>
+
+  <div id="needForm" class="hide" style="margin-top:22px">
+    <div class="card solid">
+      <h2 style="font-size:1.25rem">생년월일을 알려 주세요</h2>
+      <p class="muted small" style="margin:0 0 18px">한 번 입력하면 이 기기에 저장되어 다음부터 바로 볼 수 있습니다. 서버로는 보내지 않습니다.</p>
+      <div id="formBox"></div>
+    </div>
+  </div>
+
+  <div id="result" class="hide">
+    <section class="block" style="padding-top:26px">
+      <div class="who"><div id="who"></div><div class="btns"><a class="btn sm" id="fullLink">사주 전체 보기</a><button class="btn sm" id="resetBtn" type="button">다른 생일로 보기</button></div></div>
+      <div class="week" id="week"></div>
+    </section>
+
+    <section class="block" style="padding-top:22px">
+      <div class="card solid top">
+        <div class="score" id="score"><div><span><b id="scoreNum"></b><small>오늘의 점수</small></span></div></div>
+        <div><div class="label" id="tenLabel"></div><h2 id="fTitle"></h2><p id="fTotal"></p></div>
+      </div>
+      <div class="grid g2" style="margin-top:14px">
+        <div class="card cat"><h3><span>業</span>일과 학업</h3><p id="fWork"></p></div>
+        <div class="card cat"><h3><span>財</span>재물</h3><p id="fMoney"></p></div>
+        <div class="card cat"><h3><span>緣</span>관계와 애정</h3><p id="fLove"></p></div>
+        <div class="card cat"><h3><span>言</span>오늘의 한마디</h3><p id="fTip"></p></div>
+      </div>
+      <div class="stack" style="margin-top:14px" id="fNotes"></div>
+      <div class="card" style="margin-top:14px"><h3>오늘 힘이 되는 것</h3><dl class="kv" id="fLucky"></dl></div>
+      <p class="small muted" style="margin-top:18px">점수는 오늘 일진의 십신과 일지 사이의 합·충 관계를 바탕으로 낸 참고 수치입니다.</p>
+    </section>
+  </div>
+</main>
+
+<script>
+(function () {
+  var S = Saju, D = SajuData, U = SajuSite;
+  function $(id) { return document.getElementById(id); }
+  var WEEK = ['일', '월', '화', '수', '목', '금', '토'];
+  var base = S.todaySeoul(), profile = null, chart = null, picked = 0;
+
+  function dateAt(offset) {
+    var d = new Date(Date.UTC(base.y, base.m - 1, base.d + offset));
+    return { y: d.getUTCFullYear(), m: d.getUTCMonth() + 1, d: d.getUTCDate(), w: d.getUTCDay() };
+  }
+  // 그날의 운세 계산
+  function fortune(offset) {
+    var dt = dateAt(offset), gz = S.dayGanzi(dt.y, dt.m, dt.d), me = chart.pillars[2];
+    var ten = S.tenGod(me.s, gz.s), f = D.DAILY[ten], score = f.score, rels = S.branchRel(gz.b, me.b), notes = [];
+    rels.forEach(function (n) { var x = D.DAILY_REL[n]; if (x) { score += x.d; notes.push(x.t); } });
+    var st = S.stage(me.s, gz.b);
+    score += [3, 0, 2, 4, 4, 0, -2, -3, -1, -4, 0, 1][st];
+    if (S.stemRel(me.s, gz.s) === '합') { score += 4; notes.push('오늘의 천간이 내 일간과 합을 이룹니다. 마음이 맞는 사람을 만나거나 제안이 들어오기 쉽습니다.'); }
+    if (S.stemRel(me.s, gz.s) === '충') { score -= 4; notes.push('오늘의 천간이 내 일간과 충합니다. 의견이 부딪칠 수 있으니 결론을 서두르지 마세요.'); }
+    score = Math.max(35, Math.min(98, score));
+    return { dt: dt, gz: gz, ten: ten, f: f, score: score, notes: notes, stage: st };
+  }
+
+  function drawDay(offset) {
+    var dt = dateAt(offset), gz = S.dayGanzi(dt.y, dt.m, dt.d), lunar = S.solarToLunar(dt.y, dt.m, dt.d);
+    $('dayGz').innerHTML = U.gzTile('s', gz.s) + U.gzTile('b', gz.b, S.ANIMAL[gz.b]);
+    $('dayDate').textContent = dt.y + '년 ' + dt.m + '월 ' + dt.d + '일 ' + WEEK[dt.w] + '요일' + (lunar ? ' · 음력 ' + (lunar.leap ? '윤' : '') + lunar.m + '월 ' + lunar.d + '일' : '');
+    $('dayTitle').textContent = (offset === 0 ? '오늘은 ' : '') + S.gzK(gz) + '(' + S.gzH(gz) + ')일';
+    var se = S.stemEl(gz.s), be = S.BR_EL[gz.b];
+    $('dayDesc').textContent = '천간은 ' + D.STEM_INFO[gz.s].symbol + '을(를) 뜻하는 ' + S.STEM_K[gz.s] + S.EL[se] + ', 지지는 ' + S.ANIMAL[gz.b] + '의 ' + S.BR_K[gz.b] + S.EL[be] + '입니다. ' + D.EL_INFO[se].key + '의 기운이 하루를 이끕니다.';
+  }
+
+  function drawWeek() {
+    var h = '';
+    for (var i = 0; i < 7; i++) {
+      var x = fortune(i);
+      h += '<button type="button" data-i="' + i + '" class="' + (i === picked ? 'on' : '') + '"><b>' + (i === 0 ? '오늘' : x.dt.d + '일') + '</b><span>' + WEEK[x.dt.w] + '</span>' + U.miniGz(x.gz) + '<span>' + S.TEN[x.ten] + '</span><span class="sc">' + x.score + '</span><span class="pip"><i style="width:' + x.score + '%"></i></span></button>';
+    }
+    $('week').innerHTML = h;
+  }
+
+  function drawFortune() {
+    var x = fortune(picked), me = chart.pillars[2];
+    drawDay(picked);
+    $('score').style.setProperty('--p', x.score);
+    $('scoreNum').textContent = x.score;
+    $('tenLabel').textContent = S.STEM_K[me.s] + S.EL[S.stemEl(me.s)] + ' 일간에게 ' + S.STEM_K[x.gz.s] + S.EL[S.stemEl(x.gz.s)] + '은(는) ' + S.TEN[x.ten] + ' · ' + D.TEN_INFO[x.ten].key;
+    $('fTitle').textContent = x.f.title;
+    $('fTotal').textContent = x.f.total;
+    $('fWork').textContent = x.f.work; $('fMoney').textContent = x.f.money; $('fLove').textContent = x.f.love; $('fTip').textContent = x.f.tip;
+    var notes = x.notes.slice();
+    notes.push('12운성으로는 ' + S.STAGE[x.stage] + '의 자리입니다. ' + D.STAGE_INFO[x.stage].desc);
+    $('fNotes').innerHTML = notes.map(function (n) { return '<div class="note">' + n + '</div>'; }).join('');
+    var he = chart.helpEls[0], e = D.EL_INFO[he];
+    $('fLucky').innerHTML = '<dt>기운</dt><dd><span class="el-text el-' + he + '">' + e.hanja + ' ' + e.name + '</span> (내 사주에 보탬이 되는 오행)</dd><dt>색</dt><dd>' + e.color + '</dd><dt>방위</dt><dd>' + e.dir + '</dd><dt>숫자</dt><dd>' + e.num + '</dd><dt>해 볼 일</dt><dd>' + e.boost + '</dd>';
+  }
+
+  $('week').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button'); if (!b) return;
+    picked = +b.getAttribute('data-i'); drawWeek(); drawFortune();
+  });
+
+  var bf = U.birthForm($('formBox'), { advanced: false, requireGender: false, submit: '오늘의 운세 보기' });
+  bf.form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var v = bf.get(); if (!v) return;
+    var r = S.calc(v); if (r.error) { bf.showError(r.error); return; }
+    U.saveProfile(v); start(v, r);
+  });
+  $('resetBtn').addEventListener('click', function () {
+    $('result').classList.add('hide'); $('needForm').classList.remove('hide'); picked = 0; drawDay(0);
+    if (profile) bf.set(profile);
+  });
+
+  function start(v, r) {
+    profile = v; chart = r; picked = 0;
+    $('needForm').classList.add('hide'); $('result').classList.remove('hide');
+    $('who').innerHTML = '<span class="label">기준 사주</span><br><b>' + U.esc(v.name || '내 사주') + '</b> · ' + U.miniGz(r.pillars[2]) + ' ' + S.gzK(r.pillars[2]) + '일주';
+    $('fullLink').href = 'saju.html?' + U.toQuery(v);
+    drawWeek(); drawFortune();
+  }
+
+  drawDay(0);
+  var p = U.fromQuery() || U.getProfile(), r0 = p ? S.calc(p) : null;
+  if (r0 && !r0.error) start(p, r0); else $('needForm').classList.remove('hide');
+})();
+</script>
+</body>
+</html>
