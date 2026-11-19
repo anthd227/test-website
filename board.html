@@ -264,12 +264,22 @@
       msg.textContent = '';
       if (!title.value.trim() || !body.value.trim() || !nick.value.trim()) { msg.textContent = '제목, 닉네임, 내용을 모두 입력해 주세요'; return; }
       if (pw.value.length < 4) { msg.textContent = '비밀번호는 4자 이상이어야 합니다'; return; }
+      // 연달아 올리지 못하게 1분 간격을 둔다
+      if (!editing) {
+        var last = 0;
+        try { last = +localStorage.getItem('board.lastPost') || 0; } catch (e) {}
+        var wait = Math.ceil((last + 60000 - Date.now()) / 1000);
+        if (wait > 0) { msg.textContent = '글은 1분에 한 번만 쓸 수 있습니다. ' + wait + '초 뒤에 다시 시도해 주세요'; return; }
+      }
       submit.disabled = true;
       var job = editing
         ? rpc('update_post', { p_id: post.id, p_title: title.value, p_content: body.value, p_password: pw.value })
             .then(function (ok) { if (!ok) throw new Error('비밀번호가 맞지 않습니다'); return post.id; })
         : rpc('create_post', { p_title: title.value, p_content: body.value, p_nickname: nick.value, p_password: pw.value });
-      job.then(function (id) { location.hash = '#/post/' + id; })
+      job.then(function (id) {
+          if (!editing) { try { localStorage.setItem('board.lastPost', String(Date.now())); } catch (e) {} }
+          location.hash = '#/post/' + id;
+        })
         .catch(function (e) { submit.disabled = false; msg.textContent = e.message; });
     });
 

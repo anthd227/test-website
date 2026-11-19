@@ -89,6 +89,16 @@
   }
   if (document.body) build(); else document.addEventListener('DOMContentLoaded', build);
 
+  // 글꼴이 늦게 적용돼 위치가 밀리면 주소의 #항목 자리로 다시 맞춘다
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      if (location.hash.length < 2 || window.scrollY < 10) return;
+      var t = null;
+      try { t = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch (e) {}
+      if (t) t.scrollIntoView();
+    });
+  }
+
   /* ---------- 저장된 내 사주 ---------- */
   function getProfile() {
     try { var v = JSON.parse(localStorage.getItem('saju.profile') || 'null'); return v && v.y ? v : null; } catch (e) { return null; }

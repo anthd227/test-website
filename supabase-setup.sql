@@ -13,6 +13,10 @@ create table if not exists public.posts (
   created_at  timestamptz not null default now()
 );
 
+-- 도배 방지용 접속지 해시 (원래 주소는 저장하지 않는다)
+alter table public.posts add column if not exists ip_hash text;
+create index if not exists posts_ip_hash_created_idx on public.posts (ip_hash, created_at);
+
 alter table public.posts enable row level security;
 
 -- 비밀번호 해시는 밖에서 읽지 못하게 컬럼 단위로만 조회 허용
@@ -31,12 +35,30 @@ set search_path = public, extensions
 as $$
 declare
   new_id bigint;
+  v_ip   text;
+  v_hash text;
 begin
   if char_length(coalesce(p_password, '')) < 4 then
     raise exception '비밀번호는 4자 이상이어야 합니다';
   end if;
-  insert into posts (title, content, nickname, pw_hash)
-  values (btrim(p_title), p_content, btrim(p_nickname), crypt(p_password, gen_salt('bf')))
+
+  -- 도배 방지: 같은 접속지에서 1분에 1건, 하루 20건까지. 같은 내용은 10분 안에 다시 못 올린다.
+  v_ip := split_part(coalesce(current_setting('request.headers', true)::json ->> 'x-forwarded-for', ''), ',', 1);
+  if v_ip <> '' then
+    v_hash := encode(digest(v_ip, 'sha256'), 'hex');
+    if exists (select 1 from posts where ip_hash = v_hash and created_at > now() - interval '1 minute') then
+      raise exception '글은 1분에 한 번만 쓸 수 있습니다. 잠시 후 다시 시도해 주세요';
+    end if;
+    if (select count(*) from posts where ip_hash = v_hash and created_at > now() - interval '1 day') >= 20 then
+      raise exception '하루에 쓸 수 있는 글 수를 넘었습니다';
+    end if;
+  end if;
+  if exists (select 1 from posts where content = p_content and created_at > now() - interval '10 minutes') then
+    raise exception '같은 내용의 글이 이미 올라와 있습니다';
+  end if;
+
+  insert into posts (title, content, nickname, pw_hash, ip_hash)
+  values (btrim(p_title), p_content, btrim(p_nickname), crypt(p_password, gen_salt('bf')), v_hash)
   returning id into new_id;
   return new_id;
 end;
